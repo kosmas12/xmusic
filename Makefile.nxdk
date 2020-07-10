@@ -1,0 +1,13 @@
+XBE_TITLE = XMusic
+GEN_XISO = $(XBE_TITLE).iso
+SRCS += player.c
+NXDK_DIR = /home/$(USERNAME)/nxdk/
+NXDK_SDL = y
+
+all_local: cp_sound all
+
+include $(NXDK_DIR)/Makefile
+
+cp_sound:
+	@mkdir -p $(OUTPUT_DIR)
+	cp *.wav $(OUTPUT_DIR)
