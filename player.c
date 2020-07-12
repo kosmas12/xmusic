@@ -1,3 +1,23 @@
+/*
+XMusic Copyright (C) 2020  Kosmas Raptis
+Email: keeperkosmas6@gmail.com
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*/
+
+
+
 #if defined (NXDK)
 #include <string.h>
 #include <hal/video.h>
@@ -136,6 +156,13 @@ static void Init() {
   debugClearScreen();
   #endif
 
+  printf("XMusic, Copyright (C) 2020 Kosmas Raptis\n");
+  printf("XMusic comes with ABSOLUTELY NO WARRANTY; ");
+  printf("This is free software, and you are welcome to redistribute it under certain conditions; ");
+  printf("Read the GNU General Public License v2 for details.");
+
+  SDL_Delay(5000);
+
   SDL_Init(SDL_INIT_AUDIO|SDL_INIT_JOYSTICK);
   int mixflags = MIX_INIT_OGG|MIX_INIT_FLAC|MIX_INIT_MID|MIX_INIT_MOD|MIX_INIT_MP3|MIX_INIT_OPUS;
   int mixinitted = Mix_Init(mixflags);
@@ -154,7 +181,7 @@ typedef struct
   char filePath[150];
 }file;
 
-file[] GetFiles(char* driveletter) {
+file * GetFiles(char* driveletter) {
   WIN32_FIND_DATA findFileData;
   HANDLE hFind;
 
@@ -163,7 +190,7 @@ file[] GetFiles(char* driveletter) {
   size_t currentFileDirCount = 0;
 
   char* driveWav;
-  sprintf(driveWav, "%s\\.wav", driveLetter);
+  sprintf(driveWav, "%s\\.wav", driveletter);
 
   hFind = FindFirstFileA(driveWav, &findFileData);
 
@@ -189,7 +216,7 @@ file[] GetFiles(char* driveletter) {
 }
 
 void listFiles(const file files[]) {
-  for (int i = 0; i < NUMFILES) {
+  for (int i = 0; i < NUMFILES; i++) {
     if (files[i] != NULL) {
       printf("%d ", files[i].fileIndex);
       printf("%s\n", files[i].filePath);
@@ -203,7 +230,7 @@ void listFiles(const file files[]) {
 
 static int FileBrowser() {
 
-  files[50] = GetFiles("D:");
+  file files[50] = GetFiles("D:");
 
   int currentIndex = 0;
 
@@ -224,11 +251,11 @@ static int FileBrowser() {
       }
     }
     if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_UP)) {
-      if (currentIndex != currentFileDirCount - 1) {
+      if (currentIndex != NUMFILES - 1) {
         currentIndex++;
       } 
       else {
-        currentIndex = currentFileDirCount - 1;
+        currentIndex = NUMFILES - 1;
       }
     }
     
