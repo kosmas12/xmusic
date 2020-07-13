@@ -164,7 +164,7 @@ static void Init() {
   SDL_Delay(9000);
 
   SDL_Init(SDL_INIT_AUDIO|SDL_INIT_JOYSTICK);
-  int mixflags = MIX_INIT_OGG|MIX_INIT_FLAC|MIX_INIT_MID|MIX_INIT_MOD|MIX_INIT_MP3|MIX_INIT_OPUS;
+  int mixflags = MIX_INIT_OGG|MIX_INIT_FLAC|MIX_INIT_MID|MIX_INIT_MOD|MIX_INIT_MP3;
   int mixinitted = Mix_Init(mixflags);
 
   printf("Return value of Mix_Init(): %d\n", mixinitted);
