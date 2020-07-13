@@ -9,7 +9,7 @@ XMusic, a music player for Xbox and PC using SDL2
 
 How to use:
 
-XMusic (as of its current state) uses file paths to open your files. For example, say that on a UNIX system you have the bundled file Pause Test.wav on your Desktop. Its path will be:
+XMusic (as of its current state) uses file paths to open your files. For example, say that on a *nix system you have the bundled file Pause Test.wav on your Desktop. Its path will be:
 ```
 /home/username/Desktop/Pause Test.wav
 ```
