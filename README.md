@@ -19,6 +19,6 @@ Or if you are on Windows, XMusic will work with this:
 C:\\Users\\username\\Desktop\\Pause Test.wav
 ```
 
-After you type in the path and press Enter, your file will play. The only way to pause files right now is by holding A on a controller that was connected before running XMusic. Keyboard support will be added soon.
+After you type in the path and press Enter, your file will play. The only way to pause files right now is by holding A on a controller that was connected before running XMusic. Keyboard support will be added in the future.
 
 On Xbox, you will be presented with a file selector to choose your file from
