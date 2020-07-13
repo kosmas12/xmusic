@@ -1,0 +1,2 @@
+all:
+	i686-w64-mingw32-gcc player.c -o XMusic.exe -L /usr/i686-w64-mingw32/lib/SDL2 -lmingw32 -lSDL2main -lSDL2 -lSDL2_mixer -mwindows

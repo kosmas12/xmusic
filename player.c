@@ -159,9 +159,9 @@ static void Init() {
   printf("XMusic, Copyright (C) 2020 Kosmas Raptis\n");
   printf("XMusic comes with ABSOLUTELY NO WARRANTY; ");
   printf("This is free software, and you are welcome to redistribute it under certain conditions; ");
-  printf("Read the GNU General Public License v2 for details.");
+  printf("Read the GNU General Public License v2 for details.\n\n");
 
-  SDL_Delay(5000);
+  SDL_Delay(9000);
 
   SDL_Init(SDL_INIT_AUDIO|SDL_INIT_JOYSTICK);
   int mixflags = MIX_INIT_OGG|MIX_INIT_FLAC|MIX_INIT_MID|MIX_INIT_MOD|MIX_INIT_MP3|MIX_INIT_OPUS;
@@ -273,7 +273,7 @@ static int FileBrowser() {
 
 #endif
 
-int main()
+int main(int argc, char *argv[])
 {
   Init();
 
