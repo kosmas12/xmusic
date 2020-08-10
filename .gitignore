@@ -7,3 +7,7 @@ bin/default.xbe
 main.pdb
 main.lib
 main.exe
+bin/border.png
+bin/nxdk.wav
+bin/Pause Test.wav
+bin/Roboto-Regular.ttf
