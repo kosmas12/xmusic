@@ -11,3 +11,5 @@ include $(NXDK_DIR)/Makefile
 cp_sound:
 	@mkdir -p $(OUTPUT_DIR)
 	cp *.wav $(OUTPUT_DIR)
+	cp *.png $(OUTPUT_DIR)
+	cp *.ttf $(OUTPUT_DIR)
