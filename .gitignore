@@ -1,3 +1,9 @@
 XMusic
 player.c.d
 .vscode/c_cpp_properties.json
+player.obj
+XMusic.iso
+bin/default.xbe
+main.pdb
+main.lib
+main.exe
