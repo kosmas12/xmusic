@@ -28,12 +28,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 #include <SDL.h>
 #include <SDL_mixer.h>
 #include <nxdk/mount.h>
-#include "sdlFilePicker.h"
 #define printf(...) debugPrint(__VA_ARGS__)
 #else
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 #endif
+#include "sdlFilePicker.h"
 #include <stdio.h>
 #define NUMFILES 50 // Define file limit to use in the File Browser function GetFiles()
 #include <stdbool.h>
@@ -164,10 +164,17 @@ static void Init() {
 
   SDL_Delay(9000);
 
-  SDL_Init(SDL_INIT_AUDIO|SDL_INIT_JOYSTICK);
+  SDL_Init(SDL_INIT_AUDIO|SDL_INIT_JOYSTICK|SDL_INIT_VIDEO);
   int mixflags = MIX_INIT_OGG|MIX_INIT_FLAC|MIX_INIT_MID|MIX_INIT_MOD|MIX_INIT_MP3|MIX_INIT_OPUS;
   int mixinitted = Mix_Init(mixflags);
-
+  SDL_Window* window = SDL_CreateWindow( "XMusic", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_SHOWN );
+  int ret = InitFilePicker();
+  if(!ret) {
+      printf("File Picker disabled as it was not possible to init SDL_Image and/or SDL_TTF %u",ret);
+  }
+  else {
+      showFilePicker(window);
+  }
   printf("Return value of Mix_Init(): %d\n", mixinitted);
   SDL_Delay(1500);
 

@@ -20,6 +20,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include <SDL_image.h>
+#include <stdbool.h>
+
+/*
 #include <windows.h>
 #include <fileapi.h>
 
@@ -123,18 +126,22 @@ static int FileBrowser() {
 }
  */
 
-bool InitFilePicker() {
-    TTF_Init();
-    IMG_Init(IMG_INIT_PNG);
+int InitFilePicker() {
+    int ret = TTF_Init();
+    ret+=IMG_Init(IMG_INIT_PNG);
+    return ret;
 }
 
 void DrawStaticCrap(SDL_Surface* borderImage, SDL_Window* window) {
     SDL_Surface* windowSurface = SDL_GetWindowSurface(window);
     SDL_BlitSurface(borderImage,NULL,windowSurface,NULL);
-
 }
 
-char[210] showFilePicker(SDL_Window* window) {
-    SDL_Surface* borderImage = SDL_LoadPNG("D:\\border.png");
-    TTF_Font* Roboto = TTF_OpenFont("D:\\Roboto-Regular.ttf", int ptsize);
+char* showFilePicker(SDL_Window* window) {
+    SDL_Surface* borderImage = IMG_Load("D:\\border.png");
+    TTF_Font* Roboto = TTF_OpenFont("D:\\Roboto-Regular.ttf", 8);
+    while (true) {
+        DrawStaticCrap(borderImage, window);
+        SDL_UpdateWindowSurface(window);
+    }
 }
