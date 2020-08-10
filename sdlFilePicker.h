@@ -21,6 +21,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 #include <SDL_ttf.h>
 #include <SDL_image.h>
 #include <stdbool.h>
+#if defined(NXDK)
+#define ROOT "D:\\"
+#else
+#define ROOT "/home/username/xmusic/"
+#endif
+SDL_Event event;
 
 /*
 #include <windows.h>
@@ -35,7 +41,7 @@ typedef struct
   char filePath[150];
 }file;
 
-file * GetFiles(char* driveletter) {
+void GetFiles(char* driveletter, file filesArray[]) {
   WIN32_FIND_DATA findFileData;
   HANDLE hFind;
 
@@ -66,7 +72,7 @@ file * GetFiles(char* driveletter) {
   while (FindNextFileA(hFind, &findFileData) != 0);
   FindClose(hFind);
 
-  return foundFiles;
+  filesArray = foundFiles;
 }
 /*
 void listFiles(const file files[]) {
@@ -132,19 +138,23 @@ int InitFilePicker() {
     return ret;
 }
 
-void DrawStaticCrap(SDL_Surface* borderImage, SDL_Window* window, TTF_Font* font) {
-    SDL_Color white = {255,255,255,255};
-    SDL_Rect textLoc = {240,10,213,10};
+void DrawStaticCrap(SDL_Surface* borderImage, SDL_Window* window) {
     SDL_Surface* windowSurface = SDL_GetWindowSurface(window);
     SDL_BlitSurface(borderImage,NULL,windowSurface,NULL);
-    SDL_BlitSurface(TTF_RenderText_Solid(font, "XMusic File Picker", white),NULL,windowSurface,&textLoc);
 }
 
 char* showFilePicker(SDL_Window* window) {
-    SDL_Surface* borderImage = IMG_Load("border.png");
-    TTF_Font* Roboto = TTF_OpenFont("Roboto-Regular.ttf", 20);
+    SDL_Surface* borderImage = IMG_Load(ROOT"border.png");
+    TTF_Font* Roboto = TTF_OpenFont(ROOT"Roboto-Regular.ttf", 8);
     while (true) {
-        DrawStaticCrap(borderImage, window, Roboto);
+        while (SDL_PollEvent(&event))
+        {
+          if(event.type == SDL_QUIT) {
+            exit(0);
+          }
+        }
+
+        DrawStaticCrap(borderImage, window);
         SDL_UpdateWindowSurface(window);
     }
 }

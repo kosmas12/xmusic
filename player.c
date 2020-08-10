@@ -48,6 +48,7 @@ static Mix_Music *music = NULL;
 char fileToPlay[210];
 SDL_AudioDeviceID deviceID = 0;
 SDL_GameController *controller = NULL;
+SDL_Window* window;
 
 /*
 void audio_callback(void *userdata, Uint8 *stream, int len) {
@@ -157,17 +158,17 @@ static void Init() {
   debugClearScreen();
   #endif
 
-  printf("XMusic, Copyright (C) 2020 Kosmas Raptis\n");
+  printf("XMusic, Copyright (C) 2020 Kosmas Raptis and Bob Willett\n");
   printf("XMusic comes with ABSOLUTELY NO WARRANTY; ");
   printf("This is free software, and you are welcome to redistribute it under certain conditions; ");
   printf("Read the GNU General Public License v2 for details.\n\n");
 
-  SDL_Delay(9000);
+  SDL_Delay(3000);
 
   SDL_Init(SDL_INIT_EVERYTHING);
   int mixflags = MIX_INIT_OGG|MIX_INIT_FLAC|MIX_INIT_MID|MIX_INIT_MOD|MIX_INIT_MP3|MIX_INIT_OPUS;
   int mixinitted = Mix_Init(mixflags);
-  SDL_Window* window = SDL_CreateWindow( "XMusic", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_SHOWN );
+  window = SDL_CreateWindow( "XMusic", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_SHOWN );
   int ret = InitFilePicker();
   if(!ret) {
       printf("File Picker disabled as it was not possible to init SDL_Image and/or SDL_TTF %u",ret);
@@ -189,7 +190,7 @@ typedef struct
   char filePath[150];
 }file;
 
-file * GetFiles(char* driveletter) {
+void GetFiles(char* driveletter, file filesArray[]) {
   WIN32_FIND_DATA findFileData;
   HANDLE hFind;
 
@@ -220,12 +221,12 @@ file * GetFiles(char* driveletter) {
   while (FindNextFileA(hFind, &findFileData) != 0);
   FindClose(hFind);
 
-  return foundFiles;
+  filesArray = foundFiles;
 }
 
 void listFiles(const file files[]) {
   for (int i = 0; i < NUMFILES; i++) {
-    if (files[i] != NULL) {
+    if (files[i].fileIndex != NULL) {
       printf("%d ", files[i].fileIndex);
       printf("%s\n", files[i].filePath);
     }
@@ -238,7 +239,8 @@ void listFiles(const file files[]) {
 
 static int FileBrowser() {
 
-  file files[50] = GetFiles("D:");
+  file files[50];
+  GetFiles("D:", files);
 
   int currentIndex = 0;
 
