@@ -28,6 +28,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 #include <SDL.h>
 #include <SDL_mixer.h>
 #include <nxdk/mount.h>
+#include "sdlFilePicker.h"
 #define printf(...) debugPrint(__VA_ARGS__)
 #else
 #include <SDL2/SDL.h>

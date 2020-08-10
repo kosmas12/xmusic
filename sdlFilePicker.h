@@ -24,7 +24,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 #include <fileapi.h>
 
 //file struct and GetFiles function "borrowed" (nabbed) from player.c and thus is under copyright by Kosmas Raptir
-
+#define NUMFILES 50
 typedef struct
 {
   int fileIndex;
@@ -124,13 +124,17 @@ static int FileBrowser() {
  */
 
 bool InitFilePicker() {
+    TTF_Init();
+    IMG_Init(IMG_INIT_PNG);
+}
+
+void DrawStaticCrap(SDL_Surface* borderImage, SDL_Window* window) {
+    SDL_Surface* windowSurface = SDL_GetWindowSurface(window);
+    SDL_BlitSurface(borderImage,NULL,windowSurface,NULL);
 
 }
 
-void DrawStaticCrap() {
-
-}
-
-char[210] showFilePicker() {
-
+char[210] showFilePicker(SDL_Window* window) {
+    SDL_Surface* borderImage = SDL_LoadPNG("D:\\border.png");
+    TTF_Font* Roboto = TTF_OpenFont("D:\\Roboto-Regular.ttf", int ptsize);
 }
