@@ -132,16 +132,19 @@ int InitFilePicker() {
     return ret;
 }
 
-void DrawStaticCrap(SDL_Surface* borderImage, SDL_Window* window) {
+void DrawStaticCrap(SDL_Surface* borderImage, SDL_Window* window, TTF_Font* font) {
+    SDL_Color white = {255,255,255,255};
+    SDL_Rect textLoc = {240,10,213,10};
     SDL_Surface* windowSurface = SDL_GetWindowSurface(window);
     SDL_BlitSurface(borderImage,NULL,windowSurface,NULL);
+    SDL_BlitSurface(TTF_RenderText_Solid(font, "XMusic File Picker", white),NULL,windowSurface,&textLoc);
 }
 
 char* showFilePicker(SDL_Window* window) {
-    SDL_Surface* borderImage = IMG_Load("D:\\border.png");
-    TTF_Font* Roboto = TTF_OpenFont("D:\\Roboto-Regular.ttf", 8);
+    SDL_Surface* borderImage = IMG_Load("border.png");
+    TTF_Font* Roboto = TTF_OpenFont("Roboto-Regular.ttf", 20);
     while (true) {
-        DrawStaticCrap(borderImage, window);
+        DrawStaticCrap(borderImage, window, Roboto);
         SDL_UpdateWindowSurface(window);
     }
 }
