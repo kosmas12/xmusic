@@ -21,6 +21,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 #include <SDL_ttf.h>
 #include <SDL_image.h>
 #include <stdbool.h>
+#if defined(NXDK)
+#define ROOT "D:\\"
+#else
+#define ROOT "/home/username/xmusic/"
+#endif
+SDL_Event event;
 
 /*
 #include <windows.h>
@@ -35,7 +41,7 @@ typedef struct
   char filePath[150];
 }file;
 
-file * GetFiles(char* driveletter) {
+void GetFiles(char* driveletter, file filesArray[]) {
   WIN32_FIND_DATA findFileData;
   HANDLE hFind;
 
@@ -66,7 +72,7 @@ file * GetFiles(char* driveletter) {
   while (FindNextFileA(hFind, &findFileData) != 0);
   FindClose(hFind);
 
-  return foundFiles;
+  filesArray = foundFiles;
 }
 /*
 void listFiles(const file files[]) {
@@ -138,9 +144,16 @@ void DrawStaticCrap(SDL_Surface* borderImage, SDL_Window* window) {
 }
 
 char* showFilePicker(SDL_Window* window) {
-    SDL_Surface* borderImage = IMG_Load("D:\\border.png");
-    TTF_Font* Roboto = TTF_OpenFont("D:\\Roboto-Regular.ttf", 8);
+    SDL_Surface* borderImage = IMG_Load(ROOT"border.png");
+    TTF_Font* Roboto = TTF_OpenFont(ROOT"Roboto-Regular.ttf", 8);
     while (true) {
+        while (SDL_PollEvent(&event))
+        {
+          if(event.type == SDL_QUIT) {
+            exit(0);
+          }
+        }
+        
         DrawStaticCrap(borderImage, window);
         SDL_UpdateWindowSurface(window);
     }
