@@ -3,6 +3,7 @@ GEN_XISO = $(XBE_TITLE).iso
 SRCS += player.c
 NXDK_DIR = /home/$(USERNAME)/nxdk/
 NXDK_SDL = y
+NXDK_CXX = y
 
 all_local: cp_sound all
 

@@ -33,7 +33,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 #endif
-#include "sdlFilePicker.h"
+#include "sdlFilePicker.hpp"
 #include <stdio.h>
 #define NUMFILES 50 // Define file limit to use in the File Browser function GetFiles()
 #include <stdbool.h>
