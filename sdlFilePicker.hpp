@@ -74,7 +74,6 @@ void GetFiles(char* driveletter, file filesArray[]) {
 
   filesArray = foundFiles;
 }
-/*
 void listFiles(const file files[]) {
   for (int i = 0; i < NUMFILES; i++) {
     if (files[i] != NULL) {
