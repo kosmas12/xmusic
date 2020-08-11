@@ -24,7 +24,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 #if defined(NXDK)
 #define ROOT "D:\\"
 #else
-#define ROOT "/home/wsl/xmusicbase/xmusic/"
+#define ROOT "./"
 #endif
 SDL_Event event;
 
