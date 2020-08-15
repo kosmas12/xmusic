@@ -21,115 +21,15 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 #include <SDL_ttf.h>
 #include <SDL_image.h>
 #include <stdbool.h>
+#include "lib/FilesystemX/FilesystemX.hpp"
 #if defined(NXDK)
 #define ROOT "D:\\"
 #else
 #define ROOT "./"
 #endif
 SDL_Event event;
-
-/*
-#include <windows.h>
-#include <fileapi.h>
-
-//file struct and GetFiles function "borrowed" (nabbed) from player.c and thus is under copyright by Kosmas Raptir
-#define NUMFILES 50
-typedef struct
-{
-  int fileIndex;
-  char fileName[50];
-  char filePath[150];
-}file;
-
-void GetFiles(char* driveletter, file filesArray[]) {
-  WIN32_FIND_DATA findFileData;
-  HANDLE hFind;
-
-  file foundFiles[NUMFILES] = {NULL};
-
-  size_t currentFileDirCount = 0;
-
-  char* driveWav;
-  sprintf(driveWav, "%s\\.wav", driveletter);
-
-  hFind = FindFirstFileA(driveWav, &findFileData);
-
-  do {
-    XVideoWaitForVBlank();
-    debugClearScreen();
-    if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-      continue;
-    }
-    else {
-      if (currentFileDirCount < NUMFILES) {
-        foundFiles[currentFileDirCount].fileIndex = currentFileDirCount;
-        strcpy(foundFiles[currentFileDirCount].fileName, findFileData.cFileName);
-        sprintf(foundFiles[currentFileDirCount].filePath, "%s\\%s", driveletter, foundFiles[currentFileDirCount].fileName);
-        currentFileDirCount++;
-      }
-    }
-  }
-  while (FindNextFileA(hFind, &findFileData) != 0);
-  FindClose(hFind);
-
-  filesArray = foundFiles;
-}
-void listFiles(const file files[]) {
-  for (int i = 0; i < NUMFILES; i++) {
-    if (files[i] != NULL) {
-      printf("%d ", files[i].fileIndex);
-      printf("%s\n", files[i].filePath);
-    }
-    else {
-      return;
-    }
-  }
-}
-
-
-static int FileBrowser() {
-
-  file files[50] = GetFiles("D:");
-
-  int currentIndex = 0;
-
-  while (true)
-  {
-    XVideoWaitForVBlank();
-    SDL_GameControllerUpdate();
-    debugClearScreen();
-
-    listFiles(files);
-
-    if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_DOWN)) {
-      if (currentIndex != 0) {
-        currentIndex--;
-      }
-      else {
-        currentIndex = 0;
-      }
-    }
-    if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_UP)) {
-      if (currentIndex != NUMFILES - 1) {
-        currentIndex++;
-      }
-      else {
-        currentIndex = NUMFILES - 1;
-      }
-    }
-
-
-    printf("\nYour current selected file is: %s (Index number %d)\n", files[currentIndex].fileName, currentIndex);
-    if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)) {
-      strcpy(fileToPlay, files[currentIndex].filePath);
-      free(files);
-      break;
-    }
-  }
-
-  return 0;
-}
- */
+TTF_Font* Roboto;
+SDL_Surface* borderImage;
 
 int InitFilePicker() {
     int ret = TTF_Init();
@@ -138,13 +38,22 @@ int InitFilePicker() {
 }
 
 void DrawStaticCrap(SDL_Surface* borderImage, SDL_Window* window) {
+    SDL_Surface* text;
     SDL_Surface* windowSurface = SDL_GetWindowSurface(window);
     SDL_BlitSurface(borderImage,NULL,windowSurface,NULL);
+    ProtoFS::FilesystemX fs(ROOT);
+    std::vector<ProtoFS::fileEntry> listDir = fs.listDir();
+    SDL_Color color = {255, 255, 255};
+    for(int i = 0; i < listDir.size(); i++) {
+      text = TTF_RenderText_Solid(Roboto, listDir[i].fileName.c_str(), color);
+      SDL_BlitSurface(text, NULL, windowSurface, NULL);
+      SDL_UpdateWindowSurface(window);
+    }
 }
 
 char* showFilePicker(SDL_Window* window) {
-    SDL_Surface* borderImage = IMG_Load(ROOT"border.png");
-    TTF_Font* Roboto = TTF_OpenFont(ROOT"Roboto-Regular.ttf", 8);
+    borderImage = IMG_Load(ROOT"border.png");
+    Roboto = TTF_OpenFont(ROOT"Roboto-Regular.ttf", 25);
     while (true) {
         while (SDL_PollEvent(&event))
         {
@@ -155,5 +64,6 @@ char* showFilePicker(SDL_Window* window) {
 
         DrawStaticCrap(borderImage, window);
         SDL_UpdateWindowSurface(window);
+        SDL_Delay(2000);
     }
 }
