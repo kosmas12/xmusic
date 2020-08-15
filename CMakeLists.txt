@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.1)
+project(XMusic)
+set(CMAKE_CXX_STANDARD 17)
+add_executable(XMusic player.cpp)
+target_link_libraries(XMusic -lSDL2_mixer -lSDL2_ttf -lSDL2_image -lSDL2)
+target_include_directories(XMusic PUBLIC /usr/include/SDL2)

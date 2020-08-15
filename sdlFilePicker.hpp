@@ -20,49 +20,57 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include <SDL_image.h>
-#include <stdbool.h>
+#include <algorithm>
 #include "lib/FilesystemX/FilesystemX.hpp"
+
 #if defined(NXDK)
 #define ROOT "D:\\"
 #else
-#define ROOT "./"
+#define ROOT "../"
 #endif
 SDL_Event event;
-TTF_Font* Roboto;
-SDL_Surface* borderImage;
+TTF_Font *Roboto;
+int curSelection = 0;
 
 int InitFilePicker() {
     int ret = TTF_Init();
-    ret+=IMG_Init(IMG_INIT_PNG);
+    ret += IMG_Init(IMG_INIT_PNG);
     return ret;
 }
 
-void DrawStaticCrap(SDL_Surface* borderImage, SDL_Window* window) {
-    SDL_Surface* text;
-    SDL_Surface* windowSurface = SDL_GetWindowSurface(window);
-    SDL_BlitSurface(borderImage,NULL,windowSurface,NULL);
+void Draw(SDL_Surface *borderImage, SDL_Surface *arrowImage, SDL_Window *window) {
+    SDL_Surface *text;
+    SDL_Surface *windowSurface = SDL_GetWindowSurface(window);
+    SDL_BlitSurface(borderImage, NULL, windowSurface, NULL);
     ProtoFS::FilesystemX fs(ROOT);
-    std::vector<ProtoFS::fileEntry> listDir = fs.listDir();
+    std::vector <ProtoFS::fileEntry> listDir = fs.listDir();
     SDL_Color color = {255, 255, 255};
-    for(int i = 0; i < listDir.size(); i++) {
-      text = TTF_RenderText_Solid(Roboto, listDir[i].fileName.c_str(), color);
-      SDL_BlitSurface(text, NULL, windowSurface, NULL);
-      SDL_UpdateWindowSurface(window);
+    SDL_Rect pos = {95, 20, 500, 20};
+    for (int i = 0; i < std::min(listDir.size(), (long unsigned int) 20); i++) {
+        text = TTF_RenderText_Blended(Roboto, listDir[i].fileName.c_str(), color);
+        pos.y += 20;
+        SDL_BlitSurface(text, NULL, windowSurface, &pos);
+        if (i == (curSelection % 21)) {
+            pos.x = 45;
+            SDL_BlitSurface(arrowImage, NULL, windowSurface, &pos);
+            pos.x = 95;
+        }
     }
 }
 
-char* showFilePicker(SDL_Window* window) {
-    borderImage = IMG_Load(ROOT"border.png");
-    Roboto = TTF_OpenFont(ROOT"Roboto-Regular.ttf", 25);
+char *showFilePicker(SDL_Window *window) {
+    SDL_Surface* borderImage = IMG_Load(ROOT"border.png");
+    SDL_Surface* arrowImage = IMG_Load(ROOT"arrow.png");
+    Roboto = TTF_OpenFont(ROOT"Roboto-Regular.ttf", 15);
     while (true) {
-        while (SDL_PollEvent(&event))
-        {
-          if(event.type == SDL_QUIT) {
-            exit(0);
-          }
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                exit(0);
+            }
         }
 
-        DrawStaticCrap(borderImage, window);
+        Draw(borderImage, arrowImage, window);
+        curSelection++;
         SDL_UpdateWindowSurface(window);
         SDL_Delay(2000);
     }
