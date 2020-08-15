@@ -1,3 +1,4 @@
 [submodule "lib/FilesystemX"]
 	path = lib/FilesystemX
 	url = http://github.com/protobyter/FilesystemX
+	branch = master
