@@ -1,6 +1,6 @@
 XBE_TITLE = XMusic
 GEN_XISO = $(XBE_TITLE).iso
-SRCS += player.c
+SRCS += player.cpp
 NXDK_DIR = /home/$(USERNAME)/nxdk
 NXDK_SDL = y
 NXDK_CXX = y
