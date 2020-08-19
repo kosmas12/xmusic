@@ -46,7 +46,6 @@ static Mix_Music *music = NULL;
 
 
 SDL_AudioDeviceID deviceID = 0;
-SDL_GameController *controller = NULL;
 SDL_Window* window;
 
 /*
@@ -90,6 +89,8 @@ static void PlayFile() {
     //deviceID = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0); //NULL means default
   */
  
+
+
 #if defined(NXDK)
     int audio_rate = 48000; //48KHz saves CPU time
     Uint16 audio_format = AUDIO_S16LSB;

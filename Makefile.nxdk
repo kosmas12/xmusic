@@ -1,7 +1,7 @@
 XBE_TITLE = XMusic
 GEN_XISO = $(XBE_TITLE).iso
 SRCS += player.c
-NXDK_DIR = /home/$(USERNAME)/nxdk/
+NXDK_DIR = /media/$(USERNAME)/nxdk
 NXDK_SDL = y
 NXDK_CXX = y
 
@@ -11,6 +11,7 @@ include $(NXDK_DIR)/Makefile
 
 cp_sound:
 	@mkdir -p $(OUTPUT_DIR)
-	cp *.wav $(OUTPUT_DIR)
+	@mkdir -p $(OUTPUT_DIR)/Music
+	cp *.wav $(OUTPUT_DIR)/Music/
 	cp *.png $(OUTPUT_DIR)
 	cp *.ttf $(OUTPUT_DIR)

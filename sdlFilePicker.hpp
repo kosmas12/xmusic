@@ -23,6 +23,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 #include <algorithm>
 #include "lib/FilesystemX/FilesystemX.hpp"
 std::string fileToPlay;
+SDL_GameController *controller = NULL;
 
 
 #if defined(NXDK)
@@ -46,7 +47,7 @@ void Draw(SDL_Surface *borderImage, SDL_Surface *arrowImage, SDL_Window *window,
     SDL_BlitSurface(borderImage, NULL, windowSurface, NULL);
     SDL_Color color = {255, 255, 255};
     SDL_Rect pos = {95, 20, 500, 20};
-    for (int i = 0; i < std::min(listDir.size(), (long unsigned int) 20); i++) {
+    for (int i = 0; i < (int)listDir.size(); i++) {
         text = TTF_RenderText_Blended(Roboto, listDir[i].fileName.c_str(), color);
         pos.y += 20;
         SDL_BlitSurface(text, NULL, windowSurface, &pos);
@@ -63,7 +64,11 @@ void showFilePicker(SDL_Window *window) {
     SDL_Surface* borderImage = IMG_Load(ROOT"border.png");
     SDL_Surface* arrowImage = IMG_Load(ROOT"arrow.png");
     Roboto = TTF_OpenFont(ROOT"Roboto-Regular.ttf", 15);
-    ProtoFS::FilesystemX fs(ROOT);
+    #if defined (NXDK) || defined (_WIN32)
+    ProtoFS::FilesystemX fs(ROOT"Music\\");
+    #else
+    ProtoFS::FilesystemX fs(ROOT"Music/");
+    #endif
     std::vector<ProtoFS::fileEntry> listDir = fs.listDir();
     while (true) {
         if(Roboto != NULL){
@@ -80,11 +85,16 @@ void showFilePicker(SDL_Window *window) {
                                 curSelection--;
                             }
                             else {
-                                curSelection = 20;
+                                curSelection = (int)listDir.size();
                             }
                             break;
                         case SDLK_DOWN:
-                            curSelection++;
+                            if(curSelection < (int)listDir.size()) {
+                                curSelection++;
+                            }
+                            else {
+                                curSelection = 0;
+                            }
                             break;
                         case SDLK_RETURN:
                             fileToPlay = listDir[curSelection].filePath;
