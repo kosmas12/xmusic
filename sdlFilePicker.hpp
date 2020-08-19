@@ -32,7 +32,7 @@ SDL_GameController *controller = NULL;
 #define ROOT "./"
 #endif
 SDL_Event event;
-TTF_Font *Roboto;
+TTF_Font *Roboto = NULL;
 int curSelection = 0;
 
 int InitFilePicker() {
@@ -42,7 +42,7 @@ int InitFilePicker() {
 }
 
 void Draw(SDL_Surface *borderImage, SDL_Surface *arrowImage, SDL_Window *window, std::vector<ProtoFS::fileEntry> listDir) {
-    SDL_Surface *text;
+    SDL_Surface *text = NULL;
     SDL_Surface *windowSurface = SDL_GetWindowSurface(window);
     SDL_BlitSurface(borderImage, NULL, windowSurface, NULL);
     SDL_Color color = {255, 255, 255};

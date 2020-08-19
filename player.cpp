@@ -46,7 +46,7 @@ static Mix_Music *music = NULL;
 
 
 SDL_AudioDeviceID deviceID = 0;
-SDL_Window* window;
+SDL_Window* window = NULL;
 
 /*
 void audio_callback(void *userdata, Uint8 *stream, int len) {
@@ -65,7 +65,10 @@ static void Quit(Mix_Music *music, int exitcode) {
   Mix_FreeMusic(music);
   Mix_CloseAudio();
   Mix_Quit();
-  free(controller);
+  SDL_free(controller);
+  IMG_Quit();
+  TTF_CloseFont(Roboto);
+  TTF_Quit();
 	//SDL_FreeWAV(wavBuffer);
 	SDL_Quit();
   #if defined (NXDK)
