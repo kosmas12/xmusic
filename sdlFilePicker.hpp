@@ -26,7 +26,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 #if defined(NXDK)
 #define ROOT "D:\\"
 #else
-#define ROOT "../"
+#define ROOT "./"
 #endif
 SDL_Event event;
 TTF_Font *Roboto;
@@ -69,9 +69,15 @@ char *showFilePicker(SDL_Window *window) {
             }
         }
 
-        Draw(borderImage, arrowImage, window);
-        curSelection++;
-        SDL_UpdateWindowSurface(window);
-        SDL_Delay(2000);
+        if(Roboto != NULL){
+            Draw(borderImage, arrowImage, window);
+            curSelection++;
+            SDL_UpdateWindowSurface(window);
+            SDL_Delay(2000);
+        }
+        else {
+            printf("Couldn't initialize font. Reason: %s", TTF_GetError());
+            break;
+        }
     }
 }
