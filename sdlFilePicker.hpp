@@ -22,6 +22,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 #include <SDL_image.h>
 #include <algorithm>
 #include "lib/FilesystemX/FilesystemX.hpp"
+std::string fileToPlay;
+
 
 #if defined(NXDK)
 #define ROOT "D:\\"
@@ -38,12 +40,10 @@ int InitFilePicker() {
     return ret;
 }
 
-void Draw(SDL_Surface *borderImage, SDL_Surface *arrowImage, SDL_Window *window) {
+void Draw(SDL_Surface *borderImage, SDL_Surface *arrowImage, SDL_Window *window, std::vector<ProtoFS::fileEntry> listDir) {
     SDL_Surface *text;
     SDL_Surface *windowSurface = SDL_GetWindowSurface(window);
     SDL_BlitSurface(borderImage, NULL, windowSurface, NULL);
-    ProtoFS::FilesystemX fs(ROOT);
-    std::vector <ProtoFS::fileEntry> listDir = fs.listDir();
     SDL_Color color = {255, 255, 255};
     SDL_Rect pos = {95, 20, 500, 20};
     for (int i = 0; i < std::min(listDir.size(), (long unsigned int) 20); i++) {
@@ -55,13 +55,16 @@ void Draw(SDL_Surface *borderImage, SDL_Surface *arrowImage, SDL_Window *window)
             SDL_BlitSurface(arrowImage, NULL, windowSurface, &pos);
             pos.x = 95;
         }
+    
     }
 }
 
-char *showFilePicker(SDL_Window *window) {
+void showFilePicker(SDL_Window *window) {
     SDL_Surface* borderImage = IMG_Load(ROOT"border.png");
     SDL_Surface* arrowImage = IMG_Load(ROOT"arrow.png");
     Roboto = TTF_OpenFont(ROOT"Roboto-Regular.ttf", 15);
+    ProtoFS::FilesystemX fs(ROOT);
+    std::vector<ProtoFS::fileEntry> listDir = fs.listDir();
     while (true) {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
@@ -70,10 +73,8 @@ char *showFilePicker(SDL_Window *window) {
         }
 
         if(Roboto != NULL){
-            Draw(borderImage, arrowImage, window);
-            curSelection++;
+            Draw(borderImage, arrowImage, window, listDir);
             SDL_UpdateWindowSurface(window);
-            SDL_Delay(2000);
         }
         else {
             printf("Couldn't initialize font. Reason: %s", TTF_GetError());
