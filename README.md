@@ -9,16 +9,4 @@ XMusic, a music player for Xbox and PC using SDL2
 
 How to use:
 
-XMusic (as of its current state) uses file paths to open your files. For example, say that on a *nix system you have the bundled file Pause Test.wav on your Desktop. Its path will be:
-```
-/home/username/Desktop/Pause Test.wav
-```
-
-Or if you are on Windows, XMusic will work with this:
-```
-C:\\Users\\username\\Desktop\\Pause Test.wav
-```
-
-After you type in the path and press Enter, your file will play. The only way to pause files right now is by holding A on a controller that was connected before running XMusic. Keyboard support will be added in the future.
-
-On Xbox, you will be presented with a file selector to choose your file from
+XMusic has a file selector built-in, from which you can select your file. In order for it to work, you need to put your music files inside a folder called Music, either on your D: drive (for Xbox and Windows) or in a Music subdirectory of where you are running XMusic from. Lastly, you can change the ROOT in the beginning of sdlFilePicker.hpp to anything you want if you don't want to do this.  This file browser works both on Xbox and PC. Select a file using either the arrow keys on your keyboard or the Dpad buttons on your controller. For now, it can properly display 20 files
