@@ -45,7 +45,6 @@ static int audio_open = 0;
 static Mix_Music *music = NULL;
 
 
-char fileToPlay[210];
 SDL_AudioDeviceID deviceID = 0;
 SDL_GameController *controller = NULL;
 SDL_Window* window;
@@ -82,7 +81,7 @@ static void PlayFile() {
   //Uint32 wavLength;
   //SDL_AudioSpec wavSpec;
 
-  SDL_LoadWAV(fileToPlay, &wavSpec, &wavBuffer, &wavLength);//FIXME: Ask for file at runtime
+  SDL_LoadWAV(fileToPlay.c_str(), &wavSpec, &wavBuffer, &wavLength);//FIXME: Ask for file at runtime
   wavSpec.callback = audio_callback;
 	wavSpec.userdata = NULL;
 
@@ -118,10 +117,10 @@ static void PlayFile() {
 
     printf("Setting volume\n");
     Mix_VolumeMusic(audio_volume);
-    printf("Opening %s\n", fileToPlay);
+    printf("Opening %s\n", fileToPlay.c_str());
 
 #if 1
-    SDL_RWops *rw = SDL_RWFromFile(fileToPlay, "rb");
+    SDL_RWops *rw = SDL_RWFromFile(fileToPlay.c_str(), "rb");
 #else
     FILE* f = fopen(songs[i], "rb");
     fseek(f, 0, SEEK_END);
@@ -135,19 +134,19 @@ static void PlayFile() {
 
   if (rw == NULL) {
     printf("Couldn't open %s: %s\n",
-    fileToPlay, Mix_GetError());
+    fileToPlay.c_str(), Mix_GetError());
     Quit(music, 2);
     free(rw);
   }
-  printf("Loading %s\n", fileToPlay);
+  printf("Loading %s\n", fileToPlay.c_str());
   music = Mix_LoadMUS_RW(rw, SDL_TRUE);
   if (music == NULL) {
     printf("Couldn't load %s: %s\n",
-    fileToPlay, Mix_GetError());
+    fileToPlay.c_str(), Mix_GetError());
     Quit(music, 3);
     free(rw);
   }
-  printf("Loaded %s\n", fileToPlay);
+  printf("Loaded %s\n", fileToPlay.c_str());
   Mix_PlayMusic(music, looping);
 }
 
@@ -173,115 +172,11 @@ static void Init() {
   if(!ret) {
       printf("File Picker disabled as it was not possible to init SDL_Image and/or SDL_TTF %u",ret);
   }
-  else {
-      showFilePicker(window);
-  }
   printf("Return value of Mix_Init(): %d\n", mixinitted);
   SDL_Delay(1500);
 
 
 }
-
-#if defined (NXDK)
-typedef struct
-{
-  int fileIndex;
-  char fileName[50];
-  char filePath[150];
-}file;
-
-void GetFiles(char* driveletter, file filesArray[]) {
-  WIN32_FIND_DATA findFileData;
-  HANDLE hFind;
-
-  file foundFiles[NUMFILES] = {NULL};
-
-  size_t currentFileDirCount = 0;
-
-  char* driveWav;
-  sprintf(driveWav, "%s\\.wav", driveletter);
-
-  hFind = FindFirstFileA(driveWav, &findFileData);
-
-  do {
-    XVideoWaitForVBlank();
-    debugClearScreen();
-    if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-      continue;
-    } 
-    else {
-      if (currentFileDirCount < NUMFILES) {
-        foundFiles[currentFileDirCount].fileIndex = currentFileDirCount;
-        strcpy(foundFiles[currentFileDirCount].fileName, findFileData.cFileName);
-        sprintf(foundFiles[currentFileDirCount].filePath, "%s\\%s", driveletter, foundFiles[currentFileDirCount].fileName);
-        currentFileDirCount++;
-      }
-    }
-  } 
-  while (FindNextFileA(hFind, &findFileData) != 0);
-  FindClose(hFind);
-
-  filesArray = foundFiles;
-}
-
-void listFiles(const file files[]) {
-  for (int i = 0; i < NUMFILES; i++) {
-    if (files[i].fileIndex != NULL) {
-      printf("%d ", files[i].fileIndex);
-      printf("%s\n", files[i].filePath);
-    }
-    else {
-      return;
-    }
-  }
-}
-
-
-static int FileBrowser() {
-
-  file files[50];
-  GetFiles("D:", files);
-
-  int currentIndex = 0;
-
-  while (true)
-  {
-    XVideoWaitForVBlank();
-    SDL_GameControllerUpdate();
-    debugClearScreen();
-    
-    listFiles(files);
-
-    if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_DOWN)) {
-      if (currentIndex != 0) {
-        currentIndex--;
-      } 
-      else {
-        currentIndex = 0;
-      }
-    }
-    if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_UP)) {
-      if (currentIndex != NUMFILES - 1) {
-        currentIndex++;
-      } 
-      else {
-        currentIndex = NUMFILES - 1;
-      }
-    }
-    
-
-    printf("\nYour current selected file is: %s (Index number %d)\n", files[currentIndex].fileName, currentIndex);
-    if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)) {
-      strcpy(fileToPlay, files[currentIndex].filePath);
-      free(files);
-      break;
-    }
-  }
-
-  return 0;
-}
-
-#endif
 
 int main(int argc, char *argv[])
 {
@@ -304,31 +199,13 @@ int main(int argc, char *argv[])
                 
     }
   }
-
-  #if defined (NXDK)
-  if (FileBrowser() == 1)
-  {
-    printf("Error! Halting execution!");
-    Sleep(2500);
-    Quit(music, 5);
-  }
-  #else
-  printf("Tell me the path to the file that you want to play: ");
-  
-  int numargs = scanf("%[^\t\n]", fileToPlay);
-  if (numargs == 0)
-  {
-    printf("No file entered. Exiting...\n");
-    Quit(music, 4);
-  }
-  
-  #endif
+    showFilePicker(window);
 
   PlayFile();
 
   #if !defined (NXDK)
   printf("Opened controller: %s on port %d\n", controllername, controllerport);
-  printf("Now playing: %s\n", fileToPlay);
+  printf("Now playing: %s\n", fileToPlay.c_str());
   #endif
 
   while (Mix_PlayingMusic() == 1) {   
@@ -338,7 +215,7 @@ int main(int argc, char *argv[])
     debugClearScreen();
 
     printf("Opened controller: %s on port %d\n", controllername, controllerport);
-    printf("Now playing: %s\n", fileToPlay);
+    printf("Now playing: %s\n", fileToPlay.c_str());
     #endif
 
     #if !defined (NXDK)

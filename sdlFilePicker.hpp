@@ -50,7 +50,7 @@ void Draw(SDL_Surface *borderImage, SDL_Surface *arrowImage, SDL_Window *window,
         text = TTF_RenderText_Blended(Roboto, listDir[i].fileName.c_str(), color);
         pos.y += 20;
         SDL_BlitSurface(text, NULL, windowSurface, &pos);
-        if (i == (curSelection % 21)) {
+        if (i == (curSelection % 20)) {
             pos.x = 45;
             SDL_BlitSurface(arrowImage, NULL, windowSurface, &pos);
             pos.x = 95;
@@ -66,19 +66,70 @@ void showFilePicker(SDL_Window *window) {
     ProtoFS::FilesystemX fs(ROOT);
     std::vector<ProtoFS::fileEntry> listDir = fs.listDir();
     while (true) {
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) {
-                exit(0);
-            }
-        }
-
         if(Roboto != NULL){
             Draw(borderImage, arrowImage, window, listDir);
+            #ifndef NXDK //Events are bad for performance on Xbox, so instead we will use SDL_GameController functions
+            while (SDL_PollEvent(&event)) {
+                switch(event.type){
+                    case SDL_QUIT:
+                        exit(0);
+                    case SDL_KEYDOWN:
+                        switch (event.key.keysym.sym) {
+                            case SDLK_UP:
+                            if(curSelection > 0) {
+                                curSelection--;
+                            }
+                            else {
+                                curSelection = 20;
+                            }
+                            break;
+                        case SDLK_DOWN:
+                            curSelection++;
+                            break;
+                        case SDLK_RETURN:
+                            fileToPlay = listDir[curSelection].filePath;
+                            return;
+                        default:
+                            break;
+                        }
+                        break;
+                case SDL_CONTROLLERBUTTONDOWN:
+                    switch(event.cbutton.button){
+                        case SDL_CONTROLLER_BUTTON_DPAD_UP:
+                            curSelection++;
+                            break;
+                        case SDL_CONTROLLER_BUTTON_DPAD_DOWN:
+                            curSelection--;
+                            break;
+                        case SDL_CONTROLLER_BUTTON_A:
+                            fileToPlay = listDir[curSelection].filePath;
+                            return;
+                        default:
+                            break;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+            #else
+            if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_UP)) {
+                curSelection++;
+            }
+            if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_UP)) {
+                curSelection--;
+            }
+            if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)){
+                fileToPlay = listDir[curSelection].filePath;
+                return;
+            }
+            #endif
             SDL_UpdateWindowSurface(window);
         }
         else {
             printf("Couldn't initialize font. Reason: %s", TTF_GetError());
             break;
         }
+        SDL_Delay(200);
     }
 }
