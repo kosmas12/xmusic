@@ -85,41 +85,41 @@ void showFilePicker(SDL_Window *window) {
                                 curSelection--;
                             }
                             else {
-                                curSelection = (int)listDir.size();
+                                curSelection = (int)listDir.size() - 1;
                             }
                             break;
-                        case SDLK_DOWN:
-                            if(curSelection < (int)listDir.size()) {
-                                curSelection++;
+                            case SDLK_DOWN:
+                                if(curSelection < (int)listDir.size() - 1) {
+                                    curSelection++;
+                                }
+                                else {
+                                    curSelection = 0;
+                                }
+                                break;
+                            case SDLK_RETURN:
+                                fileToPlay = listDir[curSelection].filePath;
+                                return;
+                            default:
+                                break;
                             }
-                            else {
-                                curSelection = 0;
-                            }
-                            break;
-                        case SDLK_RETURN:
-                            fileToPlay = listDir[curSelection].filePath;
-                            return;
-                        default:
-                            break;
-                        }
                         break;
-                case SDL_CONTROLLERBUTTONDOWN:
-                    switch(event.cbutton.button){
-                        case SDL_CONTROLLER_BUTTON_DPAD_UP:
-                            curSelection++;
-                            break;
-                        case SDL_CONTROLLER_BUTTON_DPAD_DOWN:
-                            curSelection--;
-                            break;
-                        case SDL_CONTROLLER_BUTTON_A:
-                            fileToPlay = listDir[curSelection].filePath;
-                            return;
-                        default:
-                            break;
-                    }
+                    case SDL_CONTROLLERBUTTONDOWN:
+                        switch(event.cbutton.button){
+                            case SDL_CONTROLLER_BUTTON_DPAD_UP:
+                                curSelection++;
+                                break;
+                            case SDL_CONTROLLER_BUTTON_DPAD_DOWN:
+                                curSelection--;
+                                break;
+                            case SDL_CONTROLLER_BUTTON_A:
+                                fileToPlay = listDir[curSelection].filePath;
+                                return;
+                            default:
+                                break;
+                        }
                     break;
-                default:
-                    break;
+                    default:
+                        break;
             }
         }
             #else
