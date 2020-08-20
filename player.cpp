@@ -35,7 +35,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 #endif
 #include "sdlFilePicker.hpp"
 #include <stdio.h>
-#define NUMFILES 50 // Define file limit to use in the File Browser function GetFiles()
+#include <sstream>
 #include <stdbool.h>
 
 //static Uint8 *audio_position = NULL; 
@@ -43,6 +43,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 //Uint8 *wavBuffer = NULL;
 static int audio_open = 0;
 static Mix_Music *music = NULL;
+std::stringstream formatString;
+std::string formatStringstr;
 
 
 SDL_AudioDeviceID deviceID = 0;
@@ -79,6 +81,8 @@ static void Quit(Mix_Music *music, int exitcode) {
 
 static void PlayFile() {
 
+  pos = {45, 40, 500, 20};
+
   /*
   //Uint32 wavLength;
   //SDL_AudioSpec wavSpec;
@@ -108,49 +112,79 @@ static void PlayFile() {
     int looping = 0;
 
     if (Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_buffers) < 0) {
-      printf("Couldn't open audio: %s\n", SDL_GetError());
+      formatString << "Couldn't open audio: " << SDL_GetError();
+      formatStringstr = formatString.str();
+      text = TTF_RenderText_Blended(Roboto, formatStringstr.c_str(), color);
+      SDL_BlitSurface(text, NULL, windowSurface, &pos);
+      SDL_UpdateWindowSurface(window);
+      pos.y += 15;
+      formatString.str("");
     } 
     else {
       Mix_QuerySpec(&audio_rate, &audio_format, &audio_channels);
-      printf("Opened audio at %d Hz %d bit%s %s %d bytes audio buffer\n", audio_rate,
-      (audio_format&0xFF), (SDL_AUDIO_ISFLOAT(audio_format) ? " (float)" : ""),
-      (audio_channels > 2) ? "surround" : (audio_channels > 1) ? "stereo" : "mono",
-      audio_buffers);
+      formatString << "Opened audio at " << audio_rate << " Hz " << (audio_format&0xFF) <<  " bit " << (SDL_AUDIO_ISFLOAT(audio_format) ? " (float)" : "") 
+      <<  ((audio_channels > 2) ? "surround" : (audio_channels > 1) ? "stereo" : "mono ") <<  audio_buffers << "bytes audio buffer";
+      formatStringstr = formatString.str();
+      text = TTF_RenderText_Blended(Roboto, formatStringstr.c_str(), color);
+      SDL_BlitSurface(text, NULL, windowSurface, &pos);
+      SDL_UpdateWindowSurface(window);
+      pos.y += 15;
+      formatString.str("");
     }
     audio_open = 1;
 
-    printf("Setting volume\n");
+    text = TTF_RenderText_Blended(Roboto, "Setting volume", color);
+    SDL_BlitSurface(text, NULL, windowSurface, &pos);
+    formatString.str("");
+    SDL_UpdateWindowSurface(window);
+    pos.y += 15;
     Mix_VolumeMusic(audio_volume);
-    printf("Opening %s\n", fileToPlay.c_str());
-
-#if 1
+    formatString << "Opening " << fileToPlay;
+    formatStringstr = formatString.str();
+    text = TTF_RenderText_Blended(Roboto, formatStringstr.c_str(), color);
+    SDL_BlitSurface(text, NULL, windowSurface, &pos);
+    SDL_UpdateWindowSurface(window);
+    pos.y += 15;
+    formatString.str("");
     SDL_RWops *rw = SDL_RWFromFile(fileToPlay.c_str(), "rb");
-#else
-    FILE* f = fopen(songs[i], "rb");
-    fseek(f, 0, SEEK_END);
-    size_t size = ftell(f);
-    fseek(f, 0, SEEK_SET);
-    char* buff = malloc(size);
-    fread(buff, 1, size, f);
-    fclose(f);
-    SDL_RWops *rw = SDL_RWFromMem(buff, size);
-#endif
 
   if (rw == NULL) {
-    printf("Couldn't open %s: %s\n",
-    fileToPlay.c_str(), Mix_GetError());
+    formatString << "Couldn't open " << fileToPlay << ": " << Mix_GetError();
+    formatStringstr = formatString.str();
+    text = TTF_RenderText_Blended(Roboto, formatStringstr.c_str(), color);
+    SDL_BlitSurface(text, NULL, windowSurface, &pos);
+    SDL_UpdateWindowSurface(window);
+    pos.y += 15;
+    formatString.str("");
     Quit(music, 2);
     free(rw);
   }
-  printf("Loading %s\n", fileToPlay.c_str());
+  formatString << "Loading " << fileToPlay;
+  formatStringstr = formatString.str();
+  text = TTF_RenderText_Blended(Roboto, formatStringstr.c_str(), color);
+  SDL_BlitSurface(text, NULL, windowSurface, &pos);
+  SDL_UpdateWindowSurface(window);
+  pos.y += 15;
+  formatString.str("");
   music = Mix_LoadMUS_RW(rw, SDL_TRUE);
   if (music == NULL) {
-    printf("Couldn't load %s: %s\n",
-    fileToPlay.c_str(), Mix_GetError());
+    formatString << "Couldn't load " << fileToPlay << ": " << Mix_GetError();
+    formatStringstr = formatString.str();
+    text = TTF_RenderText_Blended(Roboto, formatStringstr.c_str(), color);
+    SDL_BlitSurface(text, NULL, windowSurface, &pos);
+    SDL_UpdateWindowSurface(window);
+    pos.y += 15;
+    formatString.str("");
     Quit(music, 3);
     free(rw);
   }
-  printf("Loaded %s\n", fileToPlay.c_str());
+  formatString << "Loaded " << fileToPlay;
+  formatStringstr = formatString.str();
+  text = TTF_RenderText_Blended(Roboto, formatStringstr.c_str(), color);
+  SDL_BlitSurface(text, NULL, windowSurface, &pos);
+  SDL_UpdateWindowSurface(window);
+  pos.y += 15;
+  formatString.str("");
   Mix_PlayMusic(music, looping);
 }
 
@@ -175,12 +209,12 @@ static void Init() {
 #endif
   int mixflags = MIX_INIT_OGG|MIX_INIT_FLAC|MIX_INIT_MID|MIX_INIT_MOD|MIX_INIT_MP3|MIX_INIT_OPUS;
   int mixinitted = Mix_Init(mixflags);
+  printf("Return value of Mix_Init(): %d\n", mixinitted);
   window = SDL_CreateWindow( "XMusic", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_SHOWN );
   int ret = InitFilePicker();
   if(!ret) {
       printf("File Picker disabled as it was not possible to init SDL_Image and/or SDL_TTF %u",ret);
   }
-  printf("Return value of Mix_Init(): %d\n", mixinitted);
   SDL_Delay(1500);
 
 
@@ -207,54 +241,79 @@ int main(int argc, char *argv[])
                 
     }
   }
-    showFilePicker(window);
 
-  PlayFile();
+  while (true) {
+    int numFiles = showFilePicker(window);
+    pos = {45, 40, 500, 20};
+    for (int i = 0; i < numFiles; i++) {
+      SDL_FillRect(windowSurface, &pos, SDL_MapRGB(windowSurface->format, 0, 0, 0));
+      pos.y += 20;
+    }
+    SDL_UpdateWindowSurface(window);
+    PlayFile();
+    if (controller != NULL)
+    {
+      formatString << "Opened controller " << controllername << " on port" << controllerport;
+      formatStringstr = formatString.str();
+      text = TTF_RenderText_Blended(Roboto, formatStringstr.c_str(), color);
+      SDL_BlitSurface(text, NULL, windowSurface, &pos);
+      SDL_UpdateWindowSurface(window);
+      pos.y += 15;
+    }
+    formatString.str("");
+    formatString << "Now playing: " << fileToPlay;
+    formatStringstr = formatString.str();
+    text = TTF_RenderText_Blended(Roboto, formatStringstr.c_str(), color);
+    SDL_BlitSurface(text, NULL, windowSurface, &pos);
+    SDL_UpdateWindowSurface(window);
+    pos.y += 15;
+    formatString.str("");  
+    while (Mix_PlayingMusic() == 1) {
 
-  #if !defined (NXDK)
-  printf("Opened controller: %s on port %d\n", controllername, controllerport);
-  printf("Now playing: %s\n", fileToPlay.c_str());
-  #endif
+      #if defined (NXDK)
+      XVideoWaitForVBlank();
 
-  while (Mix_PlayingMusic() == 1) {   
-    #if defined (NXDK)
-    XVideoWaitForVBlank();
+      debugClearScreen();
 
-    debugClearScreen();
+      formatString << "Now playing: " << fileToPlay << std::endl;
+      formatStringstr = formatString.str();
+      text = TTF_RenderText_Blended(Roboto, formatStringstr.c_str(), color);
+      SDL_BlitSurface(text, NULL, windowSurface, &pos);
+      SDL_UpdateWindowSurface(window);
+      pos.y += 15;
+      formatString.str("");
+      #endif
 
-    printf("Opened controller: %s on port %d\n", controllername, controllerport);
-    printf("Now playing: %s\n", fileToPlay.c_str());
-    #endif
+      #if !defined (NXDK)
+      SDL_Event event;
 
-    #if !defined (NXDK)
-    SDL_Event event;
-
-    while (SDL_PollEvent(&event)) {
-      if (event.type == SDL_QUIT)
-      {
-        Quit(music, 0);
+      while (SDL_PollEvent(&event)) {
+        if (event.type == SDL_QUIT)
+        {
+          Quit(music, 0);
+        }
       }
-    }
-    #endif
+      #endif
     
-    if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)) {
-      //SDL_PauseAudioDevice(deviceID, 1);
-      Mix_PauseMusic();
-    }
+      if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)) {
+        //SDL_PauseAudioDevice(deviceID, 1);
+        Mix_PauseMusic();
+      }
     
-    else
-    {
-      //SDL_PauseAudioDevice(deviceID, 0); //0 means unpaused
-      Mix_ResumeMusic();
-    }
+      else
+      {
+        //SDL_PauseAudioDevice(deviceID, 0); //0 means unpaused
+        Mix_ResumeMusic();
+      }
 
-    if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_B))
-    {
-      break;
+      if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_B))
+      {
+        break;
+      }
+      
     }
     
   }
-
   Quit(music, 0);
   return 0;
 }

@@ -24,6 +24,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 #include "lib/FilesystemX/FilesystemX.hpp"
 std::string fileToPlay;
 SDL_GameController *controller = NULL;
+SDL_Surface *windowSurface = NULL;
+SDL_Rect pos;
+SDL_Surface *text = NULL;
 
 
 #if defined(NXDK)
@@ -34,6 +37,7 @@ SDL_GameController *controller = NULL;
 SDL_Event event;
 TTF_Font *Roboto = NULL;
 int curSelection = 0;
+SDL_Color color = {255, 255, 255};
 
 int InitFilePicker() {
     int ret = TTF_Init();
@@ -42,11 +46,9 @@ int InitFilePicker() {
 }
 
 void Draw(SDL_Surface *borderImage, SDL_Surface *arrowImage, SDL_Window *window, std::vector<ProtoFS::fileEntry> listDir) {
-    SDL_Surface *text = NULL;
-    SDL_Surface *windowSurface = SDL_GetWindowSurface(window);
+    windowSurface = SDL_GetWindowSurface(window);
     SDL_BlitSurface(borderImage, NULL, windowSurface, NULL);
-    SDL_Color color = {255, 255, 255};
-    SDL_Rect pos = {95, 20, 500, 20};
+    pos = {95, 20, 500, 20};
     for (int i = 0; i < std::min((int)listDir.size(), (int) 20); i++) {
         text = TTF_RenderText_Blended(Roboto, listDir[i].fileName.c_str(), color);
         pos.y += 20;
@@ -60,7 +62,7 @@ void Draw(SDL_Surface *borderImage, SDL_Surface *arrowImage, SDL_Window *window,
     }
 }
 
-void showFilePicker(SDL_Window *window) {
+int showFilePicker(SDL_Window *window) {
     SDL_Surface* borderImage = IMG_Load(ROOT"border.png");
     SDL_Surface* arrowImage = IMG_Load(ROOT"arrow.png");
     Roboto = TTF_OpenFont(ROOT"Roboto-Regular.ttf", 15);
@@ -98,7 +100,7 @@ void showFilePicker(SDL_Window *window) {
                                 break;
                             case SDLK_RETURN:
                                 fileToPlay = listDir[curSelection].filePath;
-                                return;
+                                return (int)listDir.size();
                             default:
                                 break;
                             }
@@ -113,7 +115,7 @@ void showFilePicker(SDL_Window *window) {
                                 break;
                             case SDL_CONTROLLER_BUTTON_A:
                                 fileToPlay = listDir[curSelection].filePath;
-                                return;
+                                return (int)listDir.size();
                             default:
                                 break;
                         }
@@ -131,7 +133,7 @@ void showFilePicker(SDL_Window *window) {
             }
             if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)){
                 fileToPlay = listDir[curSelection].filePath;
-                return;
+                return (int)listDir.size();
             }
             #endif
             SDL_UpdateWindowSurface(window);
@@ -142,4 +144,5 @@ void showFilePicker(SDL_Window *window) {
         }
         SDL_Delay(200);
     }
+    return (int)listDir.size();
 }
