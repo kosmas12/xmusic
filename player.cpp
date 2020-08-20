@@ -63,6 +63,14 @@ void audio_callback(void *userdata, Uint8 *stream, int len) {
 	audio_length -= len;
 } */
 
+static void PutToWindow(std::string string, TTF_Font* font) {
+  text = TTF_RenderText_Blended(font, string.c_str(), color);
+  SDL_BlitSurface(text, NULL, windowSurface, &pos);
+  pos.y += 15;
+  SDL_UpdateWindowSurface(window);
+  formatString.str("");
+}
+
 static void Quit(Mix_Music *music, int exitcode) {
   Mix_FreeMusic(music);
   Mix_CloseAudio();
@@ -113,78 +121,40 @@ static void PlayFile() {
 
     if (Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_buffers) < 0) {
       formatString << "Couldn't open audio: " << SDL_GetError();
-      formatStringstr = formatString.str();
-      text = TTF_RenderText_Blended(Roboto, formatStringstr.c_str(), color);
-      SDL_BlitSurface(text, NULL, windowSurface, &pos);
-      SDL_UpdateWindowSurface(window);
-      pos.y += 15;
-      formatString.str("");
+      PutToWindow(formatString.str(), Roboto);
     } 
     else {
       Mix_QuerySpec(&audio_rate, &audio_format, &audio_channels);
       formatString << "Opened audio at " << audio_rate << " Hz " << (audio_format&0xFF) <<  " bit " << (SDL_AUDIO_ISFLOAT(audio_format) ? " (float)" : "") 
       <<  ((audio_channels > 2) ? "surround" : (audio_channels > 1) ? "stereo " : "mono ") <<  audio_buffers << " bytes audio buffer";
-      formatStringstr = formatString.str();
-      text = TTF_RenderText_Blended(Roboto, formatStringstr.c_str(), color);
-      SDL_BlitSurface(text, NULL, windowSurface, &pos);
-      SDL_UpdateWindowSurface(window);
-      pos.y += 15;
-      formatString.str("");
+      PutToWindow(formatString.str(), Roboto);
     }
     audio_open = 1;
 
-    text = TTF_RenderText_Blended(Roboto, "Setting volume", color);
-    SDL_BlitSurface(text, NULL, windowSurface, &pos);
-    formatString.str("");
-    SDL_UpdateWindowSurface(window);
-    pos.y += 15;
+    formatString << "Setting volume";
+    PutToWindow(formatString.str(), Roboto);
     Mix_VolumeMusic(audio_volume);
     formatString << "Opening " << fileToPlay;
-    formatStringstr = formatString.str();
-    text = TTF_RenderText_Blended(Roboto, formatStringstr.c_str(), color);
-    SDL_BlitSurface(text, NULL, windowSurface, &pos);
-    SDL_UpdateWindowSurface(window);
-    pos.y += 15;
-    formatString.str("");
+    PutToWindow(formatString.str(), Roboto);
     SDL_RWops *rw = SDL_RWFromFile(fileToPlay.c_str(), "rb");
 
   if (rw == NULL) {
     formatString << "Couldn't open " << fileToPlay << ": " << Mix_GetError();
-    formatStringstr = formatString.str();
-    text = TTF_RenderText_Blended(Roboto, formatStringstr.c_str(), color);
-    SDL_BlitSurface(text, NULL, windowSurface, &pos);
-    SDL_UpdateWindowSurface(window);
-    pos.y += 15;
-    formatString.str("");
+    PutToWindow(formatString.str(), Roboto);
     Quit(music, 2);
     free(rw);
   }
   formatString << "Loading " << fileToPlay;
-  formatStringstr = formatString.str();
-  text = TTF_RenderText_Blended(Roboto, formatStringstr.c_str(), color);
-  SDL_BlitSurface(text, NULL, windowSurface, &pos);
-  SDL_UpdateWindowSurface(window);
-  pos.y += 15;
-  formatString.str("");
+  PutToWindow(formatString.str(), Roboto);
   music = Mix_LoadMUS_RW(rw, SDL_TRUE);
   if (music == NULL) {
     formatString << "Couldn't load " << fileToPlay << ": " << Mix_GetError();
-    formatStringstr = formatString.str();
-    text = TTF_RenderText_Blended(Roboto, formatStringstr.c_str(), color);
-    SDL_BlitSurface(text, NULL, windowSurface, &pos);
-    SDL_UpdateWindowSurface(window);
-    pos.y += 15;
-    formatString.str("");
+    PutToWindow(formatString.str(), Roboto);
     Quit(music, 3);
     free(rw);
   }
   formatString << "Loaded " << fileToPlay;
-  formatStringstr = formatString.str();
-  text = TTF_RenderText_Blended(Roboto, formatStringstr.c_str(), color);
-  SDL_BlitSurface(text, NULL, windowSurface, &pos);
-  SDL_UpdateWindowSurface(window);
-  pos.y += 15;
-  formatString.str("");
+  PutToWindow(formatString.str(), Roboto);
   Mix_PlayMusic(music, looping);
 }
 
@@ -254,34 +224,14 @@ int main(int argc, char *argv[])
     if (controller != NULL)
     {
       formatString << "Opened controller " << controllername << " on port" << controllerport;
-      formatStringstr = formatString.str();
-      text = TTF_RenderText_Blended(Roboto, formatStringstr.c_str(), color);
-      SDL_BlitSurface(text, NULL, windowSurface, &pos);
-      SDL_UpdateWindowSurface(window);
-      pos.y += 15;
+      PutToWindow(formatString.str(), Roboto);
     }
-    formatString.str("");
     formatString << "Now playing: " << fileToPlay;
-    formatStringstr = formatString.str();
-    text = TTF_RenderText_Blended(Roboto, formatStringstr.c_str(), color);
-    SDL_BlitSurface(text, NULL, windowSurface, &pos);
-    SDL_UpdateWindowSurface(window);
-    pos.y += 15;
-    formatString.str("");  
+    PutToWindow(formatString.str(), Roboto);
     while (Mix_PlayingMusic() == 1) {
 
-      #if defined (NXDK)
+      #if defined(NXDK)
       XVideoWaitForVBlank();
-
-      debugClearScreen();
-
-      formatString << "Now playing: " << fileToPlay << std::endl;
-      formatStringstr = formatString.str();
-      text = TTF_RenderText_Blended(Roboto, formatStringstr.c_str(), color);
-      SDL_BlitSurface(text, NULL, windowSurface, &pos);
-      SDL_UpdateWindowSurface(window);
-      pos.y += 15;
-      formatString.str("");
       #endif
 
       #if !defined (NXDK)
