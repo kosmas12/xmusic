@@ -168,7 +168,11 @@ static void Init() {
 
   SDL_Delay(3000);
 
+#ifndef NXDK
   SDL_Init(SDL_INIT_EVERYTHING);
+#else
+  SDL_Init(SDL_INIT_GAMECONTROLLER|SDL_INIT_VIDEO|SDL_INIT_AUDIO);
+#endif
   int mixflags = MIX_INIT_OGG|MIX_INIT_FLAC|MIX_INIT_MID|MIX_INIT_MOD|MIX_INIT_MP3|MIX_INIT_OPUS;
   int mixinitted = Mix_Init(mixflags);
   window = SDL_CreateWindow( "XMusic", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_SHOWN );
