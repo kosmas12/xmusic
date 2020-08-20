@@ -123,7 +123,7 @@ static void PlayFile() {
     else {
       Mix_QuerySpec(&audio_rate, &audio_format, &audio_channels);
       formatString << "Opened audio at " << audio_rate << " Hz " << (audio_format&0xFF) <<  " bit " << (SDL_AUDIO_ISFLOAT(audio_format) ? " (float)" : "") 
-      <<  ((audio_channels > 2) ? "surround" : (audio_channels > 1) ? "stereo" : "mono ") <<  audio_buffers << "bytes audio buffer";
+      <<  ((audio_channels > 2) ? "surround" : (audio_channels > 1) ? "stereo " : "mono ") <<  audio_buffers << " bytes audio buffer";
       formatStringstr = formatString.str();
       text = TTF_RenderText_Blended(Roboto, formatStringstr.c_str(), color);
       SDL_BlitSurface(text, NULL, windowSurface, &pos);
