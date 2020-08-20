@@ -44,7 +44,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 static int audio_open = 0;
 static Mix_Music *music = NULL;
 std::stringstream formatString;
-std::string formatStringstr;
 
 
 SDL_AudioDeviceID deviceID = 0;
@@ -74,6 +73,9 @@ static void PutToWindow(std::string string, TTF_Font* font) {
 static void Quit(Mix_Music *music, int exitcode) {
   Mix_FreeMusic(music);
   Mix_CloseAudio();
+  SDL_FreeSurface(text);
+  SDL_FreeSurface(windowSurface);
+  SDL_DestroyWindow(window);
   Mix_Quit();
   SDL_free(controller);
   IMG_Quit();
