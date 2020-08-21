@@ -20,8 +20,8 @@ On Original Xbox, the only playable formats are .wav and .ogg, due to limitation
 # Controls
 PC:
 A on a controller or Space on a keyboard will toggle pause.
-B on a controller or Escape on a keyboard will exit the program.
+B on a controller or Escape on a keyboard will exit the program if in the file picker, will exit to file picker if playing a song.
 
 Xbox:
 A will toggle pause.
-B will exit the program.
+B will rerun the program if in the file picker, will exit to file picker if playing a song.
