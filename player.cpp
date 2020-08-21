@@ -42,12 +42,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 //static Uint32 audio_length = 0;
 //Uint8 *wavBuffer = NULL;
 static int audio_open = 0;
-static Mix_Music *music = NULL;
 std::stringstream formatString;
 
 
 SDL_AudioDeviceID deviceID = 0;
-SDL_Window* window = NULL;
 
 /*
 void audio_callback(void *userdata, Uint8 *stream, int len) {
@@ -68,25 +66,6 @@ static void PutToWindow(std::string string, TTF_Font* font) {
   pos.y += 15;
   SDL_UpdateWindowSurface(window);
   formatString.str("");
-}
-
-static void Quit(Mix_Music *music, int exitcode) {
-  Mix_FreeMusic(music);
-  Mix_CloseAudio();
-  SDL_FreeSurface(text);
-  SDL_FreeSurface(windowSurface);
-  SDL_DestroyWindow(window);
-  Mix_Quit();
-  SDL_free(controller);
-  IMG_Quit();
-  TTF_CloseFont(Roboto);
-  TTF_Quit();
-	//SDL_FreeWAV(wavBuffer);
-	SDL_Quit();
-  #if defined (NXDK)
-  XReboot();
-  #endif
-  exit(exitcode);
 } 
 
 static void PlayFile() {
@@ -256,7 +235,8 @@ int main(int argc, char *argv[])
               }
                 break;
               case SDLK_ESCAPE:
-                Quit(music, 0);
+                Mix_HaltMusic();
+                break;
               default:
                 break;
             }
@@ -264,7 +244,8 @@ int main(int argc, char *argv[])
             case SDL_CONTROLLERBUTTONDOWN:
               switch(event.cbutton.button){
                 case SDL_CONTROLLER_BUTTON_B:
-                  Quit(music, 0);
+                  Mix_HaltMusic();
+                  break;
                 case SDL_CONTROLLER_BUTTON_A:
                   SDL_Delay(50);
                   if(paused == 0) {
@@ -284,23 +265,23 @@ int main(int argc, char *argv[])
               break;
         }
       }
-            #else
-            if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)) {
-              if(paused == 0) {
-                //SDL_PauseAudioDevice(deviceID, 1);
-                Mix_PauseMusic();
-                paused = 1;
-              }
-              else {
-                Mix_ResumeMusic();
-                paused = 0;
-              }
-            }
+      #else
+      if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)) {
+        if(paused == 0) {
+          //SDL_PauseAudioDevice(deviceID, 1);
+          Mix_PauseMusic();
+          paused = 1;
+        }
+        else {
+          Mix_ResumeMusic();
+          paused = 0;
+        }
+      }
 
-            if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_B)){
-              Quit(music, 0);
-            }
-            #endif
+      if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_B)) {
+        Mix_HaltMusic();
+      }
+      #endif
       
     }
     

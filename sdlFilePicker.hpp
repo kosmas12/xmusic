@@ -27,6 +27,7 @@ SDL_GameController *controller = NULL;
 SDL_Surface *windowSurface = NULL;
 SDL_Rect pos;
 SDL_Surface *text = NULL;
+SDL_Window* window = NULL;
 
 
 #if defined(NXDK)
@@ -38,11 +39,31 @@ SDL_Event event;
 TTF_Font *Roboto = NULL;
 int curSelection = 0;
 SDL_Color color = {255, 255, 255};
+Mix_Music *music = NULL;
 
 int InitFilePicker() {
     int ret = TTF_Init();
     ret += IMG_Init(IMG_INIT_PNG);
     return ret;
+}
+
+void Quit(Mix_Music *music, int exitcode) {
+  Mix_FreeMusic(music);
+  Mix_CloseAudio();
+  SDL_FreeSurface(text);
+  SDL_FreeSurface(windowSurface);
+  SDL_DestroyWindow(window);
+  Mix_Quit();
+  SDL_free(controller);
+  IMG_Quit();
+  TTF_CloseFont(Roboto);
+  TTF_Quit();
+  //SDL_FreeWAV(wavBuffer);
+  SDL_Quit();
+  #if defined (NXDK)
+  XReboot();
+  #endif
+  exit(exitcode);
 }
 
 void Draw(SDL_Surface *borderImage, SDL_Surface *arrowImage, SDL_Window *window, std::vector<ProtoFS::fileEntry> listDir) {
@@ -101,6 +122,8 @@ int showFilePicker(SDL_Window *window) {
                             case SDLK_RETURN:
                                 fileToPlay = listDir[curSelection].filePath;
                                 return (int)listDir.size();
+                            case SDLK_ESCAPE:
+                                Quit(music, 0);
                             default:
                                 break;
                             }
@@ -116,6 +139,8 @@ int showFilePicker(SDL_Window *window) {
                             case SDL_CONTROLLER_BUTTON_A:
                                 fileToPlay = listDir[curSelection].filePath;
                                 return (int)listDir.size();
+                            case SDL_CONTROLLER_BUTTON_B:
+                                Quit(music, 0);
                             default:
                                 break;
                         }
@@ -134,6 +159,9 @@ int showFilePicker(SDL_Window *window) {
             if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)){
                 fileToPlay = listDir[curSelection].filePath;
                 return (int)listDir.size();
+            }
+            if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_B)) {
+                Quit(music, 0);
             }
             #endif
             SDL_UpdateWindowSurface(window);
