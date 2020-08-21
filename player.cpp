@@ -43,6 +43,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 //Uint8 *wavBuffer = NULL;
 static int audio_open = 0;
 std::stringstream formatString;
+int audio_volume = MIX_MAX_VOLUME;
+int paused = 0;
 
 
 SDL_AudioDeviceID deviceID = 0;
@@ -97,7 +99,6 @@ static void PlayFile() {
     int audio_channels = MIX_DEFAULT_CHANNELS;
 #endif 
     int audio_buffers = 4096;
-    int audio_volume = MIX_MAX_VOLUME;
     int looping = 1;
 
     if (Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_buffers) < 0) {
@@ -112,7 +113,7 @@ static void PlayFile() {
     }
     audio_open = 1;
 
-    formatString << "Setting volume";
+    formatString << "Setting volume to " << audio_volume;
     PutToWindow(formatString.str(), Roboto);
     Mix_VolumeMusic(audio_volume);
     formatString << "Opening " << fileToPlay;
@@ -171,6 +172,101 @@ static void Init() {
 
 }
 
+void ProcessInput() {
+  SDL_Delay(50); // Delay for a little time to avoid 2 inputs in a small time frame
+  #ifndef NXDK //Events are bad for performance on Xbox, so instead we will use SDL_GameController functions
+  while (SDL_PollEvent(&event)) {
+    switch(event.type){
+      case SDL_QUIT:
+        Quit(music, 0);
+      case SDL_KEYDOWN:
+        switch (event.key.keysym.sym) {
+          case SDLK_SPACE:
+            if(paused == 0) {
+              //SDL_PauseAudioDevice(deviceID, 1);
+              Mix_PauseMusic();
+              paused = 1;
+            }
+            else {
+              Mix_ResumeMusic();
+              paused = 0;
+            }
+            break;
+          case SDLK_ESCAPE:
+            Mix_HaltMusic();
+            break;
+          case SDLK_DOWN:
+            audio_volume -= 2;
+            Mix_VolumeMusic(audio_volume);
+            break;
+          case SDLK_UP:
+            audio_volume += 2;
+            Mix_VolumeMusic(audio_volume);
+            break;
+          default:
+            break;
+          }
+        break;
+      case SDL_CONTROLLERBUTTONDOWN:
+        switch(event.cbutton.button){
+          case SDL_CONTROLLER_BUTTON_B:
+            Mix_HaltMusic();
+            break;
+          case SDL_CONTROLLER_BUTTON_A:
+            SDL_Delay(50);
+            if(paused == 0) {
+              //SDL_PauseAudioDevice(deviceID, 1);
+              Mix_PauseMusic();
+              paused = 1;
+            }
+            else {
+              Mix_ResumeMusic();
+              paused = 0;
+            }
+            break;
+          case SDL_CONTROLLER_BUTTON_DPAD_DOWN:
+            audio_volume -= 2;
+            Mix_VolumeMusic(audio_volume);
+            break;
+          case SDL_CONTROLLER_BUTTON_DPAD_UP:
+            audio_volume += 2;
+            Mix_VolumeMusic(audio_volume);
+            break;
+          default:
+            break;
+        }
+      default:
+        break;
+      }
+    }
+    #else
+    if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)) {
+      if(paused == 0) {
+        //SDL_PauseAudioDevice(deviceID, 1);
+        Mix_PauseMusic();
+        paused = 1;
+      }
+      else {
+        Mix_ResumeMusic();
+        paused = 0;
+      }
+    }
+
+    if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_B)) {
+      Mix_HaltMusic();
+    }
+    if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_UP)) {
+      audio_volume += 2;
+      Mix_VolumeMusic(audio_volume);
+    }
+    if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_DOWN)) {
+      audio_volume -= 2;
+      Mix_VolumeMusic(audio_volume);
+    }
+    #endif
+
+}
+
 int main(int argc, char *argv[])
 {
   Init();
@@ -208,81 +304,12 @@ int main(int argc, char *argv[])
     }
     formatString << "Now playing: " << fileToPlay;
     PutToWindow(formatString.str(), Roboto);
-    int paused = 0;
     while (Mix_PlayingMusic() == 1) {
 
       #if defined(NXDK)
       XVideoWaitForVBlank();
       #endif
-
-      #ifndef NXDK //Events are bad for performance on Xbox, so instead we will use SDL_GameController functions
-      while (SDL_PollEvent(&event)) {
-        switch(event.type){
-          case SDL_QUIT:
-            Quit(music, 0);
-          case SDL_KEYDOWN:
-            switch (event.key.keysym.sym) {
-              case SDLK_SPACE:
-              SDL_Delay(50); // Delay for a little time to avoid 2 inputs in a small time frame
-              if(paused == 0) {
-                //SDL_PauseAudioDevice(deviceID, 1);
-                Mix_PauseMusic();
-                paused = 1;
-              }
-              else {
-                Mix_ResumeMusic();
-                paused = 0;
-              }
-                break;
-              case SDLK_ESCAPE:
-                Mix_HaltMusic();
-                break;
-              default:
-                break;
-            }
-            break;
-            case SDL_CONTROLLERBUTTONDOWN:
-              switch(event.cbutton.button){
-                case SDL_CONTROLLER_BUTTON_B:
-                  Mix_HaltMusic();
-                  break;
-                case SDL_CONTROLLER_BUTTON_A:
-                  SDL_Delay(50);
-                  if(paused == 0) {
-                    //SDL_PauseAudioDevice(deviceID, 1);
-                    Mix_PauseMusic();
-                    paused = 1;
-                  }
-                  else {
-                    Mix_ResumeMusic();
-                    paused = 0;
-                  }
-                  break;
-                default:
-                  break;
-              }
-            default:
-              break;
-        }
-      }
-      #else
-      if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)) {
-        if(paused == 0) {
-          //SDL_PauseAudioDevice(deviceID, 1);
-          Mix_PauseMusic();
-          paused = 1;
-        }
-        else {
-          Mix_ResumeMusic();
-          paused = 0;
-        }
-      }
-
-      if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_B)) {
-        Mix_HaltMusic();
-      }
-      #endif
-      
+      ProcessInput();
     }
     
   }
