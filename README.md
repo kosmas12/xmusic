@@ -16,3 +16,12 @@ XMusic has a file selector built-in, from which you can select your file. In ord
 XMusic supports all the file formats that SDL\_mixer can play. This means .wav, .ogg, MIDI files, MOD files, .flac, .mp3 and OPUS files.
 
 On Original Xbox, the only playable formats are .wav and .ogg, due to limitations in the SDL\_mixer port. This is expected to improve in the future.
+
+# Controls
+PC:
+A on a controller or Space on a keyboard will toggle pause.
+B on a controller or Escape on a keyboard will exit the program.
+
+Xbox:
+A will toggle pause.
+B will exit the program.
