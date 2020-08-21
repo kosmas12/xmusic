@@ -273,7 +273,7 @@ int main(int argc, char *argv[])
 
   //Open controller
   int controllerport = 0;
-  const char* controllername = NULL;
+  const char* controllername = (const char*) malloc(sizeof(char));
 
   for (int i = 0; i < SDL_NumJoysticks(); i++) { // For the time that i is smaller than the number of connected Joysticks
 

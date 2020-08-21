@@ -22,11 +22,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 #include <SDL_image.h>
 #include <algorithm>
 #include "lib/FilesystemX/FilesystemX.hpp"
-std::string fileToPlay;
+std::string fileToPlay = "";
 SDL_GameController *controller = NULL;
-SDL_Surface *windowSurface = NULL;
-SDL_Rect pos;
-SDL_Surface *text = NULL;
+SDL_Surface *windowSurface = (SDL_Surface*) malloc(sizeof(SDL_Surface));
+SDL_Rect pos = {0, 0, 0, 0};
+SDL_Surface *text = (SDL_Surface*) malloc(sizeof(SDL_Surface));
 SDL_Window* window = NULL;
 
 
@@ -49,12 +49,16 @@ int InitFilePicker() {
 
 void Quit(Mix_Music *music, int exitcode) {
   Mix_FreeMusic(music);
+  free(music);
   Mix_CloseAudio();
   SDL_FreeSurface(text);
+  free(text);
   SDL_FreeSurface(windowSurface);
+  free(windowSurface);
   SDL_DestroyWindow(window);
   Mix_Quit();
   SDL_free(controller);
+  free(controller);
   IMG_Quit();
   TTF_CloseFont(Roboto);
   TTF_Quit();
