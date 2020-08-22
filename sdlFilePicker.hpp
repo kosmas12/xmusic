@@ -85,7 +85,7 @@ int showFilePicker(SDL_Window *window) {
     SDL_Surface* arrowImage = IMG_Load(ROOT"arrow.png");
     Roboto = TTF_OpenFont(ROOT"Roboto-Regular.ttf", 15);
     #if defined (NXDK) || defined (_WIN32)
-    ProtoFS::FilesystemX fs(ROOT"Music\\*.*");
+    ProtoFS::FilesystemX fs(ROOT"Music\\");
     #else
     ProtoFS::FilesystemX fs(ROOT"Music/");
     #endif
