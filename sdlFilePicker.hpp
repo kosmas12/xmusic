@@ -24,7 +24,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 #include "lib/FilesystemX/FilesystemX.hpp"
 std::string fileToPlay = "";
 SDL_GameController *controller = NULL;
-SDL_Surface *windowSurface = (SDL_Surface*) malloc(sizeof(SDL_Surface));
 SDL_Rect pos = {0, 0, 0, 0};
 SDL_Surface *text = (SDL_Surface*) malloc(sizeof(SDL_Surface));
 SDL_Window* window = NULL;
@@ -49,21 +48,15 @@ int InitFilePicker() {
 
 void Quit(Mix_Music *music, int exitcode) {
   Mix_FreeMusic(music);
-  free(music);
   Mix_CloseAudio();
   SDL_FreeSurface(text);
-  free(text);
-  SDL_FreeSurface(windowSurface);
-  free(windowSurface);
   SDL_DestroyWindow(window);
+  SDL_Quit();
   Mix_Quit();
-  SDL_free(controller);
-  free(controller);
   IMG_Quit();
   TTF_CloseFont(Roboto);
   TTF_Quit();
   //SDL_FreeWAV(wavBuffer);
-  SDL_Quit();
   #if defined (NXDK)
   XReboot();
   #endif
@@ -71,16 +64,17 @@ void Quit(Mix_Music *music, int exitcode) {
 }
 
 void Draw(SDL_Surface *borderImage, SDL_Surface *arrowImage, SDL_Window *window, std::vector<ProtoFS::fileEntry> listDir) {
-    windowSurface = SDL_GetWindowSurface(window);
-    SDL_BlitSurface(borderImage, NULL, windowSurface, NULL);
+    SDL_BlitSurface(borderImage, NULL, SDL_GetWindowSurface(window), NULL);
     pos = {95, 20, 500, 20};
     for (int i = 0; i < std::min((int)listDir.size(), (int) 20); i++) {
         text = TTF_RenderText_Blended(Roboto, listDir[i].fileName.c_str(), color);
         pos.y += 20;
-        SDL_BlitSurface(text, NULL, windowSurface, &pos);
+        SDL_BlitSurface(text, NULL, SDL_GetWindowSurface(window), &pos);
+        SDL_FreeSurface(text);
+        text = (SDL_Surface*) malloc(sizeof(SDL_Surface));
         if (i == (curSelection % 20)) {
             pos.x = 45;
-            SDL_BlitSurface(arrowImage, NULL, windowSurface, &pos);
+            SDL_BlitSurface(arrowImage, NULL, SDL_GetWindowSurface(window), &pos);
             pos.x = 95;
         }
     
@@ -135,10 +129,20 @@ int showFilePicker(SDL_Window *window) {
                     case SDL_CONTROLLERBUTTONDOWN:
                         switch(event.cbutton.button){
                             case SDL_CONTROLLER_BUTTON_DPAD_UP:
-                                curSelection++;
+                                if(curSelection > 0) {
+                                    curSelection--;
+                                }
+                                else {
+                                    curSelection = (int)listDir.size() - 1;
+                                }
                                 break;
                             case SDL_CONTROLLER_BUTTON_DPAD_DOWN:
-                                curSelection--;
+                                if(curSelection < (int)listDir.size() - 1) {
+                                    curSelection++;
+                                }
+                                else {
+                                    curSelection = 0;
+                                }
                                 break;
                             case SDL_CONTROLLER_BUTTON_A:
                                 fileToPlay = listDir[curSelection].filePath;
@@ -155,10 +159,22 @@ int showFilePicker(SDL_Window *window) {
         }
             #else
             if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_DOWN)) {
-                curSelection++;
+                SDL_Delay(50);
+                if(curSelection < (int)listDir.size() - 1) {
+                    curSelection++;
+                }
+                else {
+                    curSelection = 0;
+                }
             }
             if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_UP)) {
-                curSelection--;
+                SDL_Delay(50);
+                if(curSelection > 0) {
+                    curSelection--;
+                }
+                else {
+                    curSelection = (int)listDir.size() - 1;
+                }
             }
             if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)){
                 fileToPlay = listDir[curSelection].filePath;

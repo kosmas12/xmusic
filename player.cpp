@@ -64,7 +64,9 @@ void audio_callback(void *userdata, Uint8 *stream, int len) {
 
 static void PutToWindow(std::string string, TTF_Font* font) {
   text = TTF_RenderText_Blended(font, string.c_str(), color);
-  SDL_BlitSurface(text, NULL, windowSurface, &pos);
+  SDL_BlitSurface(text, NULL, SDL_GetWindowSurface(window), &pos);
+  SDL_FreeSurface(text);
+  text = (SDL_Surface*) malloc(sizeof(SDL_Surface));
   pos.y += 15;
   SDL_UpdateWindowSurface(window);
   formatString.str("");
@@ -225,11 +227,21 @@ void ProcessInput() {
             }
             break;
           case SDL_CONTROLLER_BUTTON_DPAD_DOWN:
-            audio_volume -= 2;
+            if (audio_volume > 0) {
+              audio_volume -= 2;
+            }
+            else {
+              audio_volume = 0;
+            }
             Mix_VolumeMusic(audio_volume);
             break;
           case SDL_CONTROLLER_BUTTON_DPAD_UP:
-            audio_volume += 2;
+            if(audio_volume < MIX_MAX_VOLUME) {
+              audio_volume += 2;
+            }
+            else {
+              audio_volume = MIX_MAX_VOLUME;
+            }
             Mix_VolumeMusic(audio_volume);
             break;
           default:
@@ -256,11 +268,21 @@ void ProcessInput() {
       Mix_HaltMusic();
     }
     if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_UP)) {
-      audio_volume += 2;
+      if(audio_volume < MIX_MAX_VOLUME) {
+        audio_volume += 2;
+      }
+      else {
+        audio_volume = MIX_MAX_VOLUME;
+      }
       Mix_VolumeMusic(audio_volume);
     }
     if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_DOWN)) {
-      audio_volume -= 2;
+      if (audio_volume > 0) {
+        audio_volume -= 2;
+      }
+      else {
+        audio_volume = 0;
+      }
       Mix_VolumeMusic(audio_volume);
     }
     #endif
@@ -273,7 +295,7 @@ int main(int argc, char *argv[])
 
   //Open controller
   int controllerport = 0;
-  const char* controllername = (const char*) malloc(sizeof(char));
+  const char* controllername = (const char*) malloc(sizeof(const char));
 
   for (int i = 0; i < SDL_NumJoysticks(); i++) { // For the time that i is smaller than the number of connected Joysticks
 
@@ -284,8 +306,7 @@ int main(int argc, char *argv[])
         controllerport = i;
         controllername = SDL_GameControllerName(controller);
         break; // Exit the loop
-      }
-                
+      }         
     }
   }
 
@@ -293,13 +314,13 @@ int main(int argc, char *argv[])
     int numFiles = showFilePicker(window);
     pos = {45, 40, 500, 20};
     for (int i = 0; i < numFiles; i++) {
-      SDL_FillRect(windowSurface, &pos, SDL_MapRGB(windowSurface->format, 0, 0, 0));
+      SDL_FillRect(SDL_GetWindowSurface(window), &pos, SDL_MapRGB(SDL_GetWindowSurface(window)->format, 0, 0, 0));
       pos.y += 20;
     }
     SDL_UpdateWindowSurface(window);
     PlayFile();
     if (controller != NULL) {
-      formatString << "Opened controller " << controllername << " on port" << controllerport;
+      formatString << "Opened controller " << controllername << " on port " << controllerport;
       PutToWindow(formatString.str(), Roboto);
     }
     formatString << "Now playing: " << fileToPlay;
