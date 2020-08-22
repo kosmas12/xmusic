@@ -93,7 +93,6 @@ int showFilePicker(SDL_Window *window) {
     while (true) {
         if(Roboto != NULL){
             Draw(borderImage, arrowImage, window, listDir);
-            #ifndef NXDK //Events are bad for performance on Xbox, so instead we will use SDL_GameController functions
             while (SDL_PollEvent(&event)) {
                 switch(event.type){
                     case SDL_QUIT:
@@ -156,35 +155,8 @@ int showFilePicker(SDL_Window *window) {
                         break;
             }
         }
-            #else
-            if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_DOWN)) {
-                SDL_Delay(50);
-                if(curSelection < (int)listDir.size() - 1) {
-                    curSelection++;
-                }
-                else {
-                    curSelection = 0;
-                }
-            }
-            if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_UP)) {
-                SDL_Delay(50);
-                if(curSelection > 0) {
-                    curSelection--;
-                }
-                else {
-                    curSelection = (int)listDir.size() - 1;
-                }
-            }
-            if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)){
-                fileToPlay = listDir[curSelection].filePath;
-                return (int)listDir.size();
-            }
-            if(SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_B)) {
-                Quit(music, 0);
-            }
-            #endif
-            SDL_UpdateWindowSurface(window);
-        }
+        SDL_UpdateWindowSurface(window);
+    }
         else {
             printf("Couldn't initialize font. Reason: %s", TTF_GetError());
             break;

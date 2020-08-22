@@ -160,6 +160,7 @@ static void Init() {
 #else
   SDL_Init(SDL_INIT_GAMECONTROLLER|SDL_INIT_VIDEO|SDL_INIT_AUDIO);
 #endif
+  SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1");
   int mixflags = MIX_INIT_OGG|MIX_INIT_FLAC|MIX_INIT_MID|MIX_INIT_MOD|MIX_INIT_MP3|MIX_INIT_OPUS;
   int mixinitted = Mix_Init(mixflags);
   printf("Return value of Mix_Init(): %d\n", mixinitted);
@@ -175,7 +176,7 @@ static void Init() {
 
 void ProcessInput() {
   SDL_Delay(50); // Delay for a little time to avoid 2 inputs in a small time frame
-  #ifndef NXDK //Events are bad for performance on Xbox, so instead we will use SDL_GameController functions
+  //#ifndef NXDK //Events are bad for performance on Xbox, so instead we will use SDL_GameController functions
   while (SDL_PollEvent(&event)) {
     switch(event.type){
       case SDL_QUIT:
@@ -248,44 +249,8 @@ void ProcessInput() {
         }
       default:
         break;
-      }
     }
-    #else
-    if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A)) {
-      if(paused == 0) {
-        //SDL_PauseAudioDevice(deviceID, 1);
-        Mix_PauseMusic();
-        paused = 1;
-      }
-      else {
-        Mix_ResumeMusic();
-        paused = 0;
-      }
-    }
-
-    if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_B)) {
-      Mix_HaltMusic();
-    }
-    if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_UP)) {
-      if(audio_volume < MIX_MAX_VOLUME) {
-        audio_volume += 2;
-      }
-      else {
-        audio_volume = MIX_MAX_VOLUME;
-      }
-      Mix_VolumeMusic(audio_volume);
-    }
-    if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_DOWN)) {
-      if (audio_volume > 0) {
-        audio_volume -= 2;
-      }
-      else {
-        audio_volume = 0;
-      }
-      Mix_VolumeMusic(audio_volume);
-    }
-    #endif
-
+  }
 }
 
 int main(int argc, char *argv[])
