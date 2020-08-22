@@ -25,7 +25,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 std::string fileToPlay = "";
 SDL_GameController *controller = NULL;
 SDL_Rect pos = {0, 0, 0, 0};
-SDL_Surface *text = (SDL_Surface*) malloc(sizeof(SDL_Surface));
+SDL_Surface *text;
 SDL_Window* window = NULL;
 
 
@@ -50,6 +50,7 @@ void Quit(Mix_Music *music, int exitcode) {
   Mix_FreeMusic(music);
   Mix_CloseAudio();
   SDL_DestroyWindow(window);
+  SDL_GameControllerClose(controller);
   SDL_Quit();
   Mix_Quit();
   IMG_Quit();
@@ -70,7 +71,6 @@ void Draw(SDL_Surface *borderImage, SDL_Surface *arrowImage, SDL_Window *window,
         pos.y += 20;
         SDL_BlitSurface(text, NULL, SDL_GetWindowSurface(window), &pos);
         SDL_FreeSurface(text);
-        text = (SDL_Surface*) malloc(sizeof(SDL_Surface));
         if (i == (curSelection % 20)) {
             pos.x = 45;
             SDL_BlitSurface(arrowImage, NULL, SDL_GetWindowSurface(window), &pos);

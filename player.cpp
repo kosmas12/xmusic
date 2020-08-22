@@ -66,7 +66,6 @@ static void PutToWindow(std::string string, TTF_Font* font) {
   text = TTF_RenderText_Blended(font, string.c_str(), color);
   SDL_BlitSurface(text, NULL, SDL_GetWindowSurface(window), &pos);
   SDL_FreeSurface(text);
-  text = (SDL_Surface*) malloc(sizeof(SDL_Surface));
   pos.y += 15;
   SDL_UpdateWindowSurface(window);
   formatString.str("");
@@ -126,7 +125,7 @@ static void PlayFile() {
     formatString << "Couldn't open " << fileToPlay << ": " << Mix_GetError();
     PutToWindow(formatString.str(), Roboto);
     Quit(music, 2);
-    free(rw);
+    SDL_RWclose(rw);
   }
   formatString << "Loading " << fileToPlay;
   PutToWindow(formatString.str(), Roboto);
@@ -135,7 +134,7 @@ static void PlayFile() {
     formatString << "Couldn't load " << fileToPlay << ": " << Mix_GetError();
     PutToWindow(formatString.str(), Roboto);
     Quit(music, 3);
-    free(rw);
+    SDL_RWclose(rw);
   }
   formatString << "Loaded " << fileToPlay;
   PutToWindow(formatString.str(), Roboto);
@@ -332,6 +331,7 @@ int main(int argc, char *argv[])
       #endif
       ProcessInput();
     }
+    Mix_FreeMusic(music);
     
   }
   return 0;
