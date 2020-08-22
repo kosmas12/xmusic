@@ -49,7 +49,6 @@ int InitFilePicker() {
 void Quit(Mix_Music *music, int exitcode) {
   Mix_FreeMusic(music);
   Mix_CloseAudio();
-  SDL_FreeSurface(text);
   SDL_DestroyWindow(window);
   SDL_Quit();
   Mix_Quit();
