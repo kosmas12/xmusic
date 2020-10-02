@@ -5,7 +5,7 @@ XMusic, a music player for Xbox and PC using SDL2
 
 **This program is licensed under the GNU General Public License, Version 2. Read COPYING for details.**
 
-**The Makefiles for Windows suppose that you are running some sort of UNIX subsystem (e.g. WSL, CYGWIN) and have set up MinGW. If you are using Windows and want to compile from source, make sure to change the library paths so that they reflect your real paths**
+**The Makefiles for Windows suppose that you have set up SDL2, SDL2\_mixer, SDL2\_image and SDL2\_ttf on MinGW's default search path. If you haven't done this, then you can use the -I and -L flags to specify the directories where your libraries and includes**
 
 How to use:
 

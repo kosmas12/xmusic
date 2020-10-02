@@ -1,2 +1,2 @@
 all:
-	x86_64-w64-mingw32-gcc player.c -o XMusic.exe -L /usr/x86_64-w64-mingw32/lib/SDL2 -lmingw32 -lSDL2main -lSDL2 -lSDL2_mixer -mwindows
+	x86_64-w64-mingw32-g++ player.cpp -o XMusic.exe -lSDL2main -lSDL2 -lSDL2_mixer -lSDL2_image -lSDL2_ttf -mwindows -static-libgcc -static-libstdc++
