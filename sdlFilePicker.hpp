@@ -17,9 +17,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*/
-#include <SDL.h>
-#include <SDL_ttf.h>
-#include <SDL_image.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_image.h>
 #include <algorithm>
 #include "lib/FilesystemX/FilesystemX.hpp"
 std::string fileToPlay = "";
@@ -31,6 +31,9 @@ SDL_Window* window = NULL;
 
 #if defined(NXDK)
 #define ROOT "D:\\"
+#endif
+#if defined (__WIN32__)
+#define ROOT ".\\"
 #else
 #define ROOT "./"
 #endif

@@ -17,7 +17,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*/
 
 
-
+#define SDL_MAIN_HANDLED
 #if defined (NXDK)
 #include <string.h>
 #include <hal/video.h>
@@ -291,7 +291,7 @@ int main(int argc, char *argv[])
     PutToWindow(formatString.str(), Roboto);
     while (Mix_PlayingMusic() == 1) {
 
-      #if defined(NXDK)
+     #if defined(NXDK)
       XVideoWaitForVBlank();
       #endif
       ProcessInput();
