@@ -175,7 +175,6 @@ static void Init() {
 
 void ProcessInput() {
   SDL_Delay(50); // Delay for a little time to avoid 2 inputs in a small time frame
-  //#ifndef NXDK //Events are bad for performance on Xbox, so instead we will use SDL_GameController functions
   while (SDL_PollEvent(&event)) {
     switch(event.type){
       case SDL_QUIT:
@@ -290,9 +289,9 @@ int main(int argc, char *argv[])
     PutToWindow(formatString.str(), Roboto);
     while (Mix_PlayingMusic() == 1) {
 
-     #if defined(NXDK)
+     /*#if defined(NXDK)
       XVideoWaitForVBlank();
-      #endif
+      #endif*/
       ProcessInput();
     }
     Mix_FreeMusic(music);
