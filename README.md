@@ -5,7 +5,7 @@ XMusic, a music player for Xbox and PC using SDL2
 
 **This program is licensed under the GNU General Public License, Version 2. Read COPYING for details.**
 
-**The Makefiles for Windows suppose that you have set up SDL2, SDL2\_mixer, SDL2\_image and SDL2\_ttf on MinGW's default search path. If you haven't done this, then you can use the -I and -L flags to specify the directories where your libraries and includes**
+**The Makefiles for Windows suppose that you have set up SDL2, SDL2\_mixer, SDL2\_image and SDL2\_ttf on MinGW's default search path. If you haven't done this, then you can use the -I and -L flags to specify the directories where your libraries and includes are located**
 
 How to use:
 
@@ -30,8 +30,8 @@ B will rerun the program if in the file picker, will exit to file picker if play
 
 For Linux, Xbox (nxdk) and Windows (32 bit and 64 bit), there are available Makefiles which allow you to easily compile XMusic. Just make sure to have the required dependencies (SDL2, SDL2_mixer, SDL2_ttf and SDL2_image) installed on your compiler's default search path.
 
-For Linux:
-`make`
+For UNIX systems:
+`make` (requires G++ 8 or higher, or equivalent clang)
 
 For Xbox:
 `make -f Makefile.nxdk` (Also requires setting the correct NXDK_DIR if it isn't there already)
