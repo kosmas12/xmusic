@@ -34,9 +34,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 #include <SDL2/SDL_mixer.h>
 #endif
 #include "sdlFilePicker.hpp"
-#include <stdio.h>
+#include <cstdio>
 #include <sstream>
-#include <stdbool.h>
 
 //static Uint8 *audio_position = NULL; 
 //static Uint32 audio_length = 0;
@@ -158,10 +157,10 @@ static void Init() {
 #ifndef NXDK
   SDL_Init(SDL_INIT_EVERYTHING);
 #else
-  SDL_Init(SDL_INIT_GAMECONTROLLER|SDL_INIT_VIDEO|SDL_INIT_AUDIO);
+  SDL_Init(SDL_INIT_GAMECONTROLLER|SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_EVENTS);
 #endif
   SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1");
-  int mixflags = MIX_INIT_OGG|MIX_INIT_FLAC|MIX_INIT_MID|MIX_INIT_MOD|MIX_INIT_MP3|MIX_INIT_OPUS;
+  int mixflags = MIX_INIT_OGG|MIX_INIT_FLAC|MIX_INIT_MID|MIX_INIT_MOD|MIX_INIT_MP3/*|MIX_INIT_OPUS*/;
   int mixinitted = Mix_Init(mixflags);
   printf("Return value of Mix_Init(): %d\n", mixinitted);
   window = SDL_CreateWindow( "XMusic", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_SHOWN );
@@ -259,7 +258,7 @@ int main(int argc, char *argv[])
 
   //Open controller
   int controllerport = 0;
-  const char* controllername = (const char*) malloc(sizeof(const char));
+  std::string controllername = "";
 
   for (int i = 0; i < SDL_NumJoysticks(); i++) { // For the time that i is smaller than the number of connected Joysticks
 

@@ -1,2 +1,4 @@
 all:
 	x86_64-w64-mingw32-g++ player.cpp -o XMusic.exe -lSDL2main -lSDL2 -lSDL2_mixer -lSDL2_image -lSDL2_ttf -mwindows -static-libgcc -static-libstdc++
+	mkdir Music
+

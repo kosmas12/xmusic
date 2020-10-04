@@ -17,11 +17,19 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*/
+#if defined(NXDK)
+#include <SDL.h>
+#include <SDL_ttf.h>
+#include <SDL_image.h>
+#else
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
+#endif
+#include <string>
 #include <algorithm>
 #include "lib/FilesystemX/FilesystemX.hpp"
+
 std::string fileToPlay = "";
 SDL_GameController *controller = NULL;
 SDL_Rect pos = {0, 0, 0, 0};
@@ -31,8 +39,7 @@ SDL_Window* window = NULL;
 
 #if defined(NXDK)
 #define ROOT "D:\\"
-#endif
-#if defined (__WIN32__)
+#elif defined (__WIN32__)
 #define ROOT ".\\"
 #else
 #define ROOT "./"
@@ -62,8 +69,9 @@ void Quit(Mix_Music *music, int exitcode) {
   //SDL_FreeWAV(wavBuffer);
   #if defined (NXDK)
   XReboot();
-  #endif
+  #else
   exit(exitcode);
+  #endif
 }
 
 void Draw(SDL_Surface *borderImage, SDL_Surface *arrowImage, SDL_Window *window, std::vector<ProtoFS::fileEntry> listDir) {
