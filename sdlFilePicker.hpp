@@ -101,77 +101,77 @@ int showFilePicker(SDL_Window *window) {
     #endif
     std::vector<ProtoFS::fileEntry> listDir = fs.listDir();
     while (true) {
-        if(Roboto != NULL){
-            Draw(borderImage, arrowImage, window, listDir);
-            while (SDL_PollEvent(&event)) {
-                switch(event.type){
-                    case SDL_QUIT:
-                        exit(0);
-                    case SDL_KEYDOWN:
-                        switch (event.key.keysym.sym) {
-                            case SDLK_UP:
-                            if(curSelection > 0) {
-                                curSelection--;
-                            }
-                            else {
-                                curSelection = (int)listDir.size() - 1;
-                            }
-                            break;
-                            case SDLK_DOWN:
-                                if(curSelection < (int)listDir.size() - 1) {
-                                    curSelection++;
-                                }
-                                else {
-                                    curSelection = 0;
-                                }
-                                break;
-                            case SDLK_RETURN:
-                                fileToPlay = listDir[curSelection].filePath;
-                                return (int)listDir.size();
-                            case SDLK_ESCAPE:
-                                Quit(music, 0);
-                            default:
-                                break;
-                            }
-                        break;
-                    case SDL_CONTROLLERBUTTONDOWN:
-                        switch(event.cbutton.button){
-                            case SDL_CONTROLLER_BUTTON_DPAD_UP:
-                                if(curSelection > 0) {
-                                    curSelection--;
-                                }
-                                else {
-                                    curSelection = (int)listDir.size() - 1;
-                                }
-                                break;
-                            case SDL_CONTROLLER_BUTTON_DPAD_DOWN:
-                                if(curSelection < (int)listDir.size() - 1) {
-                                    curSelection++;
-                                }
-                                else {
-                                    curSelection = 0;
-                                }
-                                break;
-                            case SDL_CONTROLLER_BUTTON_A:
-                                fileToPlay = listDir[curSelection].filePath;
-                                return (int)listDir.size();
-                            case SDL_CONTROLLER_BUTTON_B:
-                                Quit(music, 0);
-                            default:
-                                break;
-                        }
+      if(Roboto != NULL){
+        Draw(borderImage, arrowImage, window, listDir);
+        while (SDL_PollEvent(&event)) {
+          switch(event.type){
+            case SDL_QUIT:
+              exit(0);
+              case SDL_KEYDOWN:
+                switch (event.key.keysym.sym) {
+                  case SDLK_UP:
+                    if(curSelection > 0) {
+                      curSelection--;
+                    }
+                    else {
+                      curSelection = (int)listDir.size() - 1;
+                    }
                     break;
+                  case SDLK_DOWN:
+                      if(curSelection < (int)listDir.size() - 1) {
+                        curSelection++;
+                      }
+                      else {
+                        curSelection = 0;
+                      }
+                      break;
+                  case SDLK_KP_ENTER:
+                        fileToPlay = listDir[curSelection].filePath;
+                        return (int)listDir.size();
+                  case SDLK_ESCAPE:
+                    Quit(music, 0);
                     default:
-                        break;
+                      break;
+                }
+                break;
+              case SDL_CONTROLLERBUTTONDOWN:
+                switch(event.cbutton.button) {
+                  case SDL_CONTROLLER_BUTTON_DPAD_UP:
+                    if(curSelection > 0) {
+                      curSelection--;
+                    }
+                    else {
+                      curSelection = (int)listDir.size() - 1;
+                    }
+                    break;
+                  case SDL_CONTROLLER_BUTTON_DPAD_DOWN:
+                    if(curSelection < (int)listDir.size() - 1) {
+                      curSelection++;
+                    }
+                    else {
+                      curSelection = 0;
+                    }
+                    break;
+                  case SDL_CONTROLLER_BUTTON_A:
+                    fileToPlay = listDir[curSelection].filePath;
+                    return (int)listDir.size();
+                  case SDL_CONTROLLER_BUTTON_B:
+                    Quit(music, 0);
+                  default:
+                    break;
+                }
+                break;
+              default:
+                break;
             }
         }
         SDL_UpdateWindowSurface(window);
-    }
-        else {
-            printf("Couldn't initialize font. Reason: %s", TTF_GetError());
-            break;
-        }
-        SDL_Delay(200);
+      }
+      else {
+        printf("Couldn't initialize font. Reason: %s", TTF_GetError());
+        break;
+      }
+      SDL_Delay(200);
     }
     return (int)listDir.size();
 }
