@@ -57,16 +57,15 @@ int InitFilePicker() {
 }
 
 void Quit(Mix_Music *music, int exitcode) {
-  Mix_FreeMusic(music);
   Mix_CloseAudio();
   SDL_DestroyWindow(window);
   SDL_GameControllerClose(controller);
-  SDL_Quit();
+  //SDL_FreeWAV(wavBuffer);
   Mix_Quit();
   IMG_Quit();
   TTF_CloseFont(Roboto);
   TTF_Quit();
-  //SDL_FreeWAV(wavBuffer);
+  SDL_Quit();
   #if defined (NXDK)
   XReboot();
   #else

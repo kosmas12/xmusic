@@ -294,8 +294,8 @@ int main(int argc, char *argv[])
       XVideoWaitForVBlank();
       #endif
       ProcessInput();
+      Mix_FreeMusic(music);
     }
-    Mix_FreeMusic(music);
     
   }
   return 0;
