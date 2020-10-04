@@ -153,14 +153,9 @@ static void Init() {
   printf("Read the GNU General Public License v2 for details.\n\n");
 
   SDL_Delay(3000);
-
-#ifndef NXDK
   SDL_Init(SDL_INIT_EVERYTHING);
-#else
-  SDL_Init(SDL_INIT_GAMECONTROLLER|SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_EVENTS);
-#endif
   SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1");
-  int mixflags = MIX_INIT_OGG|MIX_INIT_FLAC|MIX_INIT_MID|MIX_INIT_MOD|MIX_INIT_MP3|MIX_INIT_OPUS;
+  int mixflags = MIX_INIT_OGG|MIX_INIT_FLAC|MIX_INIT_MID|MIX_INIT_MOD|MIX_INIT_MP3/*|MIX_INIT_OPUS*/;
   int mixinitted = Mix_Init(mixflags);
   printf("Return value of Mix_Init(): %d\n", mixinitted);
   window = SDL_CreateWindow( "XMusic", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_SHOWN );
@@ -245,6 +240,7 @@ void ProcessInput() {
           default:
             break;
         }
+        break;
       default:
         break;
     }
@@ -289,9 +285,9 @@ int main(int argc, char *argv[])
     PutToWindow(formatString.str(), Roboto);
     while (Mix_PlayingMusic() == 1) {
 
-     /*#if defined(NXDK)
+     #if defined(NXDK)
       XVideoWaitForVBlank();
-      #endif*/
+      #endif
       ProcessInput();
     }
     Mix_FreeMusic(music);
