@@ -125,7 +125,7 @@ int showFilePicker(SDL_Window *window) {
                         curSelection = 0;
                       }
                       break;
-                  case SDLK_KP_ENTER:
+                  case SDLK_RETURN:
                         fileToPlay = listDir[curSelection].filePath;
                         return (int)listDir.size();
                   case SDLK_ESCAPE:
@@ -169,9 +169,9 @@ int showFilePicker(SDL_Window *window) {
       }
       else {
         printf("Couldn't initialize font. Reason: %s", TTF_GetError());
+        SDL_Delay(200);
         break;
       }
-      SDL_Delay(200);
     }
     return (int)listDir.size();
 }

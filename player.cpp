@@ -169,7 +169,6 @@ static void Init() {
 }
 
 void ProcessInput() {
-  SDL_Delay(50); // Delay for a little time to avoid 2 inputs in a small time frame
   while (SDL_PollEvent(&event)) {
     switch(event.type){
       case SDL_QUIT:
