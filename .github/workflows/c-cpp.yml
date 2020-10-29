@@ -20,3 +20,11 @@ jobs:
       run: sudo apt install gcc-8 libsdl2-dev libsdl2-mixer-dev libsdl2-image-dev libsdl2-ttf-dev
     - name: Compile
       run: make
+    - uses: actions/upload-artifact@v2
+      with:
+        name: XMusic-Linux64
+        path: |
+        XMusic
+        Roboto-Regular.ttf
+        arrow.png
+        border.png
