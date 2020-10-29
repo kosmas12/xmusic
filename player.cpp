@@ -171,6 +171,12 @@ static void Init() {
 void ProcessInput() {
   while (SDL_PollEvent(&event)) {
     switch(event.type){
+      case SDL_CONTROLLERDEVICEADDED:
+        OpenFirstController();
+        break;
+      case SDL_CONTROLLERDEVICEREMOVED:
+        CloseFirstController();
+        break;
       case SDL_QUIT:
         Quit(music, 0);
       case SDL_KEYDOWN:
@@ -249,23 +255,6 @@ void ProcessInput() {
 int main(int argc, char *argv[])
 {
   Init();
-
-  //Open controller
-  int controllerport = 0;
-  std::string controllername = "";
-
-  for (int i = 0; i < SDL_NumJoysticks(); i++) { // For the time that i is smaller than the number of connected Joysticks
-
-    if(SDL_IsGameController(i)) { // If i (which we use to iterate through the connected controllers) as a port number is a Game Controller
-      controller = SDL_GameControllerOpen(i); // Open the controller
-
-      if(controller) { // If we find that we opened a controller
-        controllerport = i;
-        controllername = SDL_GameControllerName(controller);
-        break; // Exit the loop
-      }         
-    }
-  }
 
   while (true) {
     int numFiles = showFilePicker(window);

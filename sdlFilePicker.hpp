@@ -35,7 +35,29 @@ SDL_GameController *controller = NULL;
 SDL_Rect pos = {0, 0, 0, 0};
 SDL_Surface *text;
 SDL_Window* window = NULL;
+int controllerport = 0;
+std::string controllername = "";
 
+void OpenFirstController() {
+  //Open controller
+
+  for (int i = 0; i < SDL_NumJoysticks(); i++) { // For the time that i is smaller than the number of connected Joysticks
+
+    if(SDL_IsGameController(i)) { // If i (which we use to iterate through the connected controllers) as a port number is a Game Controller
+      controller = SDL_GameControllerOpen(i); // Open the controller
+      if(controller) { // If we find that we opened a controller
+        controllerport = i;
+        controllername = SDL_GameControllerName(controller);
+        break; // Exit the loop
+      }
+    }
+  }
+}
+
+void CloseFirstController() {
+  SDL_GameControllerClose(controller);
+  printf("Controller 1 closed\n");
+}
 
 #if defined(NXDK)
 #define ROOT "D:\\"
@@ -59,7 +81,7 @@ int InitFilePicker() {
 void Quit(Mix_Music *music, int exitcode) {
   Mix_CloseAudio();
   SDL_DestroyWindow(window);
-  SDL_GameControllerClose(controller);
+  CloseFirstController();
   //SDL_FreeWAV(wavBuffer);
   Mix_Quit();
   IMG_Quit();
