@@ -18,9 +18,13 @@ jobs:
         git submodule update --recursive
     - name: Install dependencies
       run: sudo apt install gcc-8 libsdl2-dev libsdl2-mixer-dev libsdl2-image-dev libsdl2-ttf-dev
+    - name: Prepare source to upload artifact
+      run: |
+        mkdir build/source
+        cp --recursive * build/source
     - name: Compile
       run: make
     - uses: actions/upload-artifact@v2
       with:
         name: XMusic-Linux64
-        path: build/
+        path: build/**
