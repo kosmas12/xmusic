@@ -151,6 +151,7 @@ static void Init() {
   printf("XMusic comes with ABSOLUTELY NO WARRANTY; ");
   printf("This is free software, and you are welcome to redistribute it under certain conditions; ");
   printf("Read the GNU General Public License v2 for details.\n\n");
+  printf("Source code for the specific version you're using came with this executable.make\n\n");
 
   SDL_Delay(3000);
   SDL_Init(SDL_INIT_EVERYTHING);
