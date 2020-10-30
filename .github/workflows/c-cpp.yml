@@ -27,4 +27,6 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: XMusic-Linux64
-        path: build/**
+        path: |
+        build/**
+        source/**
