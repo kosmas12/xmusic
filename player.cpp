@@ -165,6 +165,7 @@ static void Init() {
       printf("File Picker disabled as it was not possible to init SDL_Image and/or SDL_TTF %u",ret);
   }
   SDL_Delay(1500);
+  OpenFirstController();
 
 
 }
