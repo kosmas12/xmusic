@@ -273,11 +273,7 @@ int main(int argc, char *argv[])
     }
     formatString << "Now playing: " << fileToPlay;
     PutToWindow(formatString.str(), Roboto);
-    while (Mix_PlayingMusic() == 1) {
-
-     #if defined(NXDK)
-      XVideoWaitForVBlank();
-      #endif
+    while (Mix_PlayingMusic() || Mix_PausedMusic()) {
       ProcessInput();
     }
     Mix_FreeMusic(music);
