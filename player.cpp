@@ -123,17 +123,17 @@ static void PlayFile() {
   if (rw == NULL) {
     formatString << "Couldn't open " << fileToPlay << ": " << Mix_GetError();
     PutToWindow(formatString.str(), Roboto);
-    Quit(music, 2);
     SDL_RWclose(rw);
+    Quit(music, 2);
   }
   formatString << "Loading " << fileToPlay;
   PutToWindow(formatString.str(), Roboto);
-  music = Mix_LoadMUS_RW(rw, SDL_TRUE);
+  music = Mix_LoadMUS_RW(rw, 1);
   if (music == NULL) {
     formatString << "Couldn't load " << fileToPlay << ": " << Mix_GetError();
     PutToWindow(formatString.str(), Roboto);
-    Quit(music, 3);
     SDL_RWclose(rw);
+    Quit(music, 3);
   }
   formatString << "Loaded " << fileToPlay;
   PutToWindow(formatString.str(), Roboto);
@@ -151,7 +151,7 @@ static void Init() {
   printf("XMusic comes with ABSOLUTELY NO WARRANTY; ");
   printf("This is free software, and you are welcome to redistribute it under certain conditions; ");
   printf("Read the GNU General Public License v2 for details.\n\n");
-  printf("Source code for the specific version you're using came with this executable.make\n\n");
+  printf("Source code for the specific version you're using came with this executable.\n\n");
 
   SDL_Delay(3000);
   SDL_Init(SDL_INIT_EVERYTHING);
@@ -215,7 +215,6 @@ void ProcessInput() {
             Mix_HaltMusic();
             break;
           case SDL_CONTROLLER_BUTTON_A:
-            SDL_Delay(50);
             if(paused == 0) {
               //SDL_PauseAudioDevice(deviceID, 1);
               Mix_PauseMusic();

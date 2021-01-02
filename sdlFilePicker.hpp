@@ -37,6 +37,7 @@ SDL_Surface *text;
 SDL_Window* window = NULL;
 int controllerport = 0;
 std::string controllername = "";
+bool exitted = 0;
 
 void OpenFirstController() {
   //Open controller
@@ -55,8 +56,10 @@ void OpenFirstController() {
 }
 
 void CloseFirstController() {
-  SDL_GameControllerClose(controller);
-  printf("Controller 1 closed\n");
+  if (controller != NULL) {
+    SDL_GameControllerClose(controller);
+    printf("Controller 1 closed\n");
+  }
 }
 
 #if defined(NXDK)
@@ -108,7 +111,6 @@ void Draw(SDL_Surface *borderImage, SDL_Surface *arrowImage, SDL_Window *window,
             SDL_BlitSurface(arrowImage, NULL, SDL_GetWindowSurface(window), &pos);
             pos.x = 95;
         }
-    
     }
 }
 
@@ -128,64 +130,67 @@ int showFilePicker(SDL_Window *window) {
         while (SDL_PollEvent(&event)) {
           switch(event.type){
             case SDL_QUIT:
-              exit(0);
-              case SDL_KEYDOWN:
-                switch (event.key.keysym.sym) {
-                  case SDLK_UP:
-                    if(curSelection > 0) {
-                      curSelection--;
-                    }
-                    else {
-                      curSelection = (int)listDir.size() - 1;
-                    }
-                    break;
-                  case SDLK_DOWN:
-                      if(curSelection < (int)listDir.size() - 1) {
-                        curSelection++;
-                      }
-                      else {
-                        curSelection = 0;
-                      }
-                      break;
-                  case SDLK_RETURN:
-                        fileToPlay = listDir[curSelection].filePath;
-                        return (int)listDir.size();
-                  case SDLK_ESCAPE:
-                    Quit(music, 0);
-                    default:
-                      break;
+              exitted = 1;
+              Quit(music, 0);
+            case SDL_KEYDOWN:
+              switch (event.key.keysym.sym) {
+                case SDLK_UP:
+                  if(curSelection > 0) {
+                    curSelection--;
+                  }
+                  else {
+                    curSelection = (int)listDir.size() - 1;
+                  }
+                  break;
+                case SDLK_DOWN:
+                  if(curSelection < (int)listDir.size() - 1) {
+                    curSelection++;
+                  }
+                  else {
+                    curSelection = 0;
+                  }
+                  break;
+                case SDLK_RETURN:
+                  fileToPlay = listDir[curSelection].filePath;
+                  return (int)listDir.size();
+                case SDLK_ESCAPE:
+                  exitted = 1;
+                  Quit(music, 0);
+                default:
+                  break;
                 }
-                break;
-              case SDL_CONTROLLERBUTTONDOWN:
-                switch(event.cbutton.button) {
-                  case SDL_CONTROLLER_BUTTON_DPAD_UP:
-                    if(curSelection > 0) {
-                      curSelection--;
-                    }
-                    else {
-                      curSelection = (int)listDir.size() - 1;
-                    }
-                    break;
-                  case SDL_CONTROLLER_BUTTON_DPAD_DOWN:
-                    if(curSelection < (int)listDir.size() - 1) {
-                      curSelection++;
-                    }
-                    else {
-                      curSelection = 0;
-                    }
-                    break;
-                  case SDL_CONTROLLER_BUTTON_A:
-                    fileToPlay = listDir[curSelection].filePath;
-                    return (int)listDir.size();
-                  case SDL_CONTROLLER_BUTTON_B:
-                    Quit(music, 0);
-                  default:
-                    break;
+              break;
+            case SDL_CONTROLLERBUTTONDOWN:
+              switch(event.cbutton.button) {
+                case SDL_CONTROLLER_BUTTON_DPAD_UP:
+                  if(curSelection > 0) {
+                    curSelection--;
+                  }
+                  else {
+                    curSelection = (int)listDir.size() - 1;
+                  }
+                  break;
+                case SDL_CONTROLLER_BUTTON_DPAD_DOWN:
+                  if(curSelection < (int)listDir.size() - 1) {
+                    curSelection++;
+                  }
+                  else {
+                    curSelection = 0;
+                  }
+                  break;
+                case SDL_CONTROLLER_BUTTON_A:
+                  fileToPlay = listDir[curSelection].filePath;
+                  return (int)listDir.size();
+                case SDL_CONTROLLER_BUTTON_B:
+                  exitted = 1;
+                  Quit(music, 0);
+                default:
+                  break;
                 }
-                break;
-              default:
-                break;
-            }
+              break;
+            default:
+              break;
+          }
         }
         SDL_UpdateWindowSurface(window);
       }
