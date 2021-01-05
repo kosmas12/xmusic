@@ -1,5 +1,5 @@
 /*
-SDLFilePicker for XMusic Copyright (C) 2020  Bob Willett
+SDLFilePicker for XMusic Copyright (C) 2020-2021  Bob Willett
 Email: bobrow2006@gmail.com
 
 XMusic is copyrighted by Kosmas Raptis

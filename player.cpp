@@ -1,5 +1,5 @@
 /*
-XMusic Copyright (C) 2020  Kosmas Raptis
+XMusic Copyright (C) 2020-2021  Kosmas Raptis
 Email: keeperkosmas6@gmail.com
 
 This program is free software; you can redistribute it and/or
@@ -98,7 +98,7 @@ static void PlayFile() {
     Uint16 audio_format = MIX_DEFAULT_FORMAT;
     int audio_channels = MIX_DEFAULT_CHANNELS;
 #endif 
-    int audio_buffers = 4096;
+    int audio_buffers = 6144;
     int looping = 1;
 
     if (Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_buffers) < 0) {
@@ -147,7 +147,7 @@ static void Init() {
   debugClearScreen();
   #endif
 
-  printf("XMusic, Copyright (C) 2020 Kosmas Raptis and Bob Willett\n");
+  printf("XMusic, Copyright (C) 2020-2021 Kosmas Raptis and Bob Willett\n");
   printf("XMusic comes with ABSOLUTELY NO WARRANTY; ");
   printf("This is free software, and you are welcome to redistribute it under certain conditions; ");
   printf("Read the GNU General Public License v2 for details.\n\n");
@@ -183,6 +183,7 @@ void ProcessInput() {
         Quit(music, 0);
       case SDL_KEYDOWN:
         switch (event.key.keysym.sym) {
+          case SDLK_AUDIOPLAY:
           case SDLK_SPACE:
             if(paused == 0) {
               //SDL_PauseAudioDevice(deviceID, 1);
@@ -198,10 +199,12 @@ void ProcessInput() {
             Mix_HaltMusic();
             break;
           case SDLK_DOWN:
+          case SDLK_VOLUMEDOWN:
             audio_volume -= 2;
             Mix_VolumeMusic(audio_volume);
             break;
           case SDLK_UP:
+          case SDLK_VOLUMEUP:
             audio_volume += 2;
             Mix_VolumeMusic(audio_volume);
             break;
