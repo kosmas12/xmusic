@@ -78,7 +78,7 @@ static void PlayFile() {
   //Uint32 wavLength;
   //SDL_AudioSpec wavSpec;
 
-  SDL_LoadWAV(fileToPlay.c_str(), &wavSpec, &wavBuffer, &wavLength);//FIXME: Ask for file at runtime
+  SDL_LoadWAV(fileToPlay.c_str(), &wavSpec, &wavBuffer, &wavLength);
   wavSpec.callback = audio_callback;
 	wavSpec.userdata = NULL;
 
@@ -86,39 +86,31 @@ static void PlayFile() {
 	audio_length = wavLength;
     //deviceID = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0); //NULL means default
   */
- 
 
+  int audio_rate = MIX_DEFAULT_FREQUENCY; // On Xbox, this is currently ignored and audio always opens at 48KHz
+  Uint16 audio_format = MIX_DEFAULT_FORMAT;
+  int audio_channels = MIX_DEFAULT_CHANNELS;
+  int audio_buffers = 4096;
+  int looping = 1;
 
-#if defined(NXDK)
-    int audio_rate = 48000; //48KHz saves CPU time
-    Uint16 audio_format = AUDIO_S16LSB;
-    int audio_channels = 2;
-#else
-    int audio_rate = MIX_DEFAULT_FREQUENCY;
-    Uint16 audio_format = MIX_DEFAULT_FORMAT;
-    int audio_channels = MIX_DEFAULT_CHANNELS;
-#endif 
-    int audio_buffers = 6144;
-    int looping = 1;
-
-    if (Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_buffers) < 0) {
-      formatString << "Couldn't open audio: " << SDL_GetError();
-      PutToWindow(formatString.str(), Roboto);
-    } 
-    else {
-      Mix_QuerySpec(&audio_rate, &audio_format, &audio_channels);
-      formatString << "Opened audio at " << audio_rate << " Hz " << (audio_format&0xFF) <<  " bit " << (SDL_AUDIO_ISFLOAT(audio_format) ? " (float)" : "") 
-      <<  ((audio_channels > 2) ? "surround" : (audio_channels > 1) ? "stereo " : "mono ") <<  audio_buffers << " bytes audio buffer";
-      PutToWindow(formatString.str(), Roboto);
-    }
-    audio_open = 1;
-
-    formatString << "Setting volume to " << audio_volume;
+  if (Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_buffers) < 0) {
+    formatString << "Couldn't open audio: " << SDL_GetError();
     PutToWindow(formatString.str(), Roboto);
-    Mix_VolumeMusic(audio_volume);
-    formatString << "Opening " << fileToPlay;
+  }
+  else {
+    Mix_QuerySpec(&audio_rate, &audio_format, &audio_channels);
+    formatString << "Opened audio at " << audio_rate << " Hz " << (audio_format&0xFF) <<  " bit " << (SDL_AUDIO_ISFLOAT(audio_format) ? " (float)" : "")
+    <<  ((audio_channels > 2) ? "surround" : (audio_channels > 1) ? "stereo " : "mono ") <<  audio_buffers << " bytes audio buffer";
     PutToWindow(formatString.str(), Roboto);
-    SDL_RWops *rw = SDL_RWFromFile(fileToPlay.c_str(), "rb");
+  }
+  audio_open = 1;
+
+  formatString << "Setting volume to " << audio_volume;
+  PutToWindow(formatString.str(), Roboto);
+  Mix_VolumeMusic(audio_volume);
+  formatString << "Opening " << fileToPlay;
+  PutToWindow(formatString.str(), Roboto);
+  SDL_RWops *rw = SDL_RWFromFile(fileToPlay.c_str(), "rb");
 
   if (rw == NULL) {
     formatString << "Couldn't open " << fileToPlay << ": " << Mix_GetError();
@@ -166,8 +158,6 @@ static void Init() {
   }
   SDL_Delay(1500);
   OpenFirstController();
-
-
 }
 
 void ProcessInput() {
