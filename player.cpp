@@ -44,6 +44,7 @@ static int audio_open = 0;
 std::stringstream formatString;
 int audio_volume = MIX_MAX_VOLUME;
 int paused = 0;
+static bool shouldLoop = 0;
 
 
 SDL_AudioDeviceID deviceID = 0;
@@ -130,6 +131,13 @@ static void PlayFile() {
   formatString << "Loaded " << fileToPlay;
   PutToWindow(formatString.str(), Roboto);
   Mix_PlayMusic(music, looping);
+
+  if (controller != NULL) {
+    formatString << "Opened controller " << controllername << " on port " << controllerport;
+    PutToWindow(formatString.str(), Roboto);
+  }
+  formatString << "Now playing: " << fileToPlay;
+  PutToWindow(formatString.str(), Roboto);
 }
 
 static void Init() {
@@ -198,6 +206,9 @@ void ProcessInput() {
             audio_volume += 2;
             Mix_VolumeMusic(audio_volume);
             break;
+          case SDLK_l:
+            shouldLoop = !shouldLoop;
+            break;
           default:
             break;
           }
@@ -251,24 +262,24 @@ int main(int argc, char *argv[])
   Init();
 
   while (true) {
-    int numFiles = showFilePicker(window);
-    pos = {45, 40, 500, 20};
-    for (int i = 0; i < numFiles; i++) {
-      SDL_FillRect(SDL_GetWindowSurface(window), &pos, SDL_MapRGB(SDL_GetWindowSurface(window)->format, 0, 0, 0));
-      pos.y += 20;
-    }
-    SDL_UpdateWindowSurface(window);
-    PlayFile();
-    if (controller != NULL) {
-      formatString << "Opened controller " << controllername << " on port " << controllerport;
-      PutToWindow(formatString.str(), Roboto);
-    }
-    formatString << "Now playing: " << fileToPlay;
-    PutToWindow(formatString.str(), Roboto);
     while (Mix_PlayingMusic() || Mix_PausedMusic()) {
       ProcessInput();
     }
-    Mix_FreeMusic(music);
+    if (!shouldLoop) {
+      Mix_FreeMusic(music);
+      int numFiles = showFilePicker(window);
+      pos = {45, 40, 500, 20};
+      for (int i = 0; i < numFiles; i++) {
+        SDL_FillRect(SDL_GetWindowSurface(window), &pos, SDL_MapRGB(SDL_GetWindowSurface(window)->format, 0, 0, 0));
+        pos.y += 20;
+      }
+    }
+    else {
+      pos = {45, 40, 500, 200};
+      SDL_FillRect(SDL_GetWindowSurface(window), &pos, SDL_MapRGB(SDL_GetWindowSurface(window)->format, 0, 0, 0));
+    }
+    PlayFile();
+    SDL_UpdateWindowSurface(window);
   }
   return 0;
 }
