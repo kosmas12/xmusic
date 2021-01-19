@@ -247,6 +247,9 @@ void ProcessInput() {
             }
             Mix_VolumeMusic(audio_volume);
             break;
+          case SDL_CONTROLLER_BUTTON_X:
+            shouldLoop = !shouldLoop;
+            break;
           default:
             break;
         }
