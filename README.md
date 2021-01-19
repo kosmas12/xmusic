@@ -19,25 +19,41 @@ On Original Xbox, the only playable formats are .wav and .ogg, due to limitation
 
 # Controls
 PC:
+
 A on a controller or Space on a keyboard will toggle pause.
+
 B on a controller or Escape on a keyboard will exit the program if in the file picker, will exit to file picker if playing a song.
 
+Backspace will go up one directory. Also if you pick a directory in the file picker, Enter will enter that directory.
+
 Xbox:
+
 A will toggle pause.
-B will rerun the program if in the file picker, will exit to file picker if playing a song.
+
+B will exit to dashboard if the program is in the file picker, will exit to file picker if playing a song.
 
 # How to compile
 
 For Linux, Xbox (nxdk) and Windows (32 bit and 64 bit), there are available Makefiles which allow you to easily compile XMusic. Just make sure to have the required dependencies (SDL2, SDL2_mixer, SDL2_ttf and SDL2_image) installed on your compiler's default search path.
 
 For UNIX systems:
+
 `make` (requires G++ 8 or higher, or equivalent clang)
 
 For Xbox:
+
 `make -f Makefile.nxdk` (Also requires setting the correct NXDK_DIR if it isn't there already)
 
 For Windows:
+
 `make -f MakefileWin32` for 32 bit
+
 `make -f MakefileWin64` for 64 bit
 
 Windows also requires that you pack all the DLL files in the same directory as XMusic.exe
+
+# Notes
+
+**On Xbox, the RECOMMENDED file format is OGG/Vorbis, preferably created
+with FFMpeg and has a 48000Hz sample rate. Anything lower may cause 
+a popping sound while playing!**
