@@ -166,6 +166,9 @@ int showFilePicker(SDL_Window *window) {
                 exitted = 1;
                 Quit(music, 0);
                 break;
+              case SDLK_r:
+                listDir = fs->listDir();
+                break;
               case SDLK_BACKSPACE:
                 curPath = curPath + ".." + SEPARATOR;
                 delete fs;
@@ -197,6 +200,9 @@ int showFilePicker(SDL_Window *window) {
                 exitted = 1;
                 delete fs;
                 Quit(music, 0);
+              case SDL_CONTROLLER_BUTTON_Y:
+                listDir = fs->listDir();
+                break;
               default:
                 break;
             }

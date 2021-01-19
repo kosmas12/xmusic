@@ -26,11 +26,15 @@ B on a controller or Escape on a keyboard will exit the program if in the file p
 
 Backspace will go up one directory. Also if you pick a directory in the file picker, Enter will enter that directory.
 
+Y on a controller or R on a controller in the file picker will refresh the directory listing.
+
 Xbox:
 
 A will toggle pause.
 
 B will exit to dashboard if the program is in the file picker, will exit to file picker if playing a song.
+
+Y in the file picker will refresh the directory listing.
 
 # How to compile
 

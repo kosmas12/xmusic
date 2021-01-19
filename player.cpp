@@ -222,12 +222,11 @@ void ProcessInput() {
             if(paused == 0) {
               //SDL_PauseAudioDevice(deviceID, 1);
               Mix_PauseMusic();
-              paused = 1;
             }
             else {
               Mix_ResumeMusic();
-              paused = 0;
             }
+            paused = !paused;
             break;
           case SDL_CONTROLLER_BUTTON_DPAD_DOWN:
             if (audio_volume > 0) {
