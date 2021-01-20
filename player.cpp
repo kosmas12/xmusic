@@ -62,14 +62,47 @@ void audio_callback(void *userdata, Uint8 *stream, int len) {
 	audio_length -= len;
 } */
 
-static void PutToWindow(std::string string, TTF_Font* font) {
+static void PutToWindow(std::string string, TTF_Font* font, SDL_Rect *pos) {
   text = TTF_RenderText_Blended(font, string.c_str(), color);
-  SDL_BlitSurface(text, NULL, SDL_GetWindowSurface(window), &pos);
+  SDL_BlitSurface(text, NULL, windowSurface, pos);
   SDL_FreeSurface(text);
-  pos.y += 15;
+  pos->y += 20;
   SDL_UpdateWindowSurface(window);
   formatString.str("");
-} 
+}
+
+void UpdateVolumeOnScreen() {
+  SDL_Rect volumePos = {130, 5, 150, 20};
+  SDL_FillRect(windowSurface, &volumePos, SDL_MapRGB(windowSurface->format, 0, 0, 0));
+  formatString << "Volume: " << audio_volume;
+  PutToWindow(formatString.str(), Roboto, &volumePos);
+}
+
+void UpdateLoopOnScreen() {
+  SDL_Rect loopPos = {280, 5, 150, 20};
+  SDL_FillRect(windowSurface, &loopPos, SDL_MapRGB(windowSurface->format, 0, 0, 0));
+  std::string toWrite;
+  if (shouldLoop) {
+    toWrite = "Loop: on";
+  }
+  else {
+    toWrite = "Loop: off";
+  }
+  PutToWindow(toWrite, Roboto, &loopPos);
+}
+
+void UpdatePauseOnScreen() {
+  SDL_Rect pausePos = {430, 5, 150, 20};
+  SDL_FillRect(windowSurface, &pausePos, SDL_MapRGB(windowSurface->format, 0, 0, 0));
+  std::string toWrite;
+  if (paused) {
+    toWrite = "Paused";
+  }
+  else {
+    toWrite = "Playing";
+  }
+  PutToWindow(toWrite, Roboto, &pausePos);
+}
 
 static void PlayFile() {
 
@@ -96,48 +129,52 @@ static void PlayFile() {
 
   if (Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_buffers) < 0) {
     formatString << "Couldn't open audio: " << SDL_GetError();
-    PutToWindow(formatString.str(), Roboto);
+    PutToWindow(formatString.str(), Roboto, &pos);
   }
   else {
     Mix_QuerySpec(&audio_rate, &audio_format, &audio_channels);
     formatString << "Opened audio at " << audio_rate << " Hz " << (audio_format&0xFF) <<  " bit " << (SDL_AUDIO_ISFLOAT(audio_format) ? " (float)" : "")
     <<  ((audio_channels > 2) ? "surround" : (audio_channels > 1) ? "stereo " : "mono ") <<  audio_buffers << " bytes audio buffer";
-    PutToWindow(formatString.str(), Roboto);
+    PutToWindow(formatString.str(), Roboto, &pos);
   }
   audio_open = 1;
 
   formatString << "Setting volume to " << audio_volume;
-  PutToWindow(formatString.str(), Roboto);
+  PutToWindow(formatString.str(), Roboto, &pos);
   Mix_VolumeMusic(audio_volume);
   formatString << "Opening " << fileToPlay;
-  PutToWindow(formatString.str(), Roboto);
+  PutToWindow(formatString.str(), Roboto, &pos);
   SDL_RWops *rw = SDL_RWFromFile(fileToPlay.c_str(), "rb");
 
   if (rw == NULL) {
     formatString << "Couldn't open " << fileToPlay << ": " << Mix_GetError();
-    PutToWindow(formatString.str(), Roboto);
+    PutToWindow(formatString.str(), Roboto, &pos);
     SDL_RWclose(rw);
     Quit(music, 2);
   }
   formatString << "Loading " << fileToPlay;
-  PutToWindow(formatString.str(), Roboto);
+  PutToWindow(formatString.str(), Roboto, &pos);
   music = Mix_LoadMUS_RW(rw, 1);
   if (music == NULL) {
     formatString << "Couldn't load " << fileToPlay << ": " << Mix_GetError();
-    PutToWindow(formatString.str(), Roboto);
+    PutToWindow(formatString.str(), Roboto, &pos);
     SDL_RWclose(rw);
     Quit(music, 3);
   }
   formatString << "Loaded " << fileToPlay;
-  PutToWindow(formatString.str(), Roboto);
+  PutToWindow(formatString.str(), Roboto, &pos);
   Mix_PlayMusic(music, looping);
 
   if (controller != NULL) {
     formatString << "Opened controller " << controllername << " on port " << controllerport;
-    PutToWindow(formatString.str(), Roboto);
+    PutToWindow(formatString.str(), Roboto, &pos);
   }
   formatString << "Now playing: " << fileToPlay;
-  PutToWindow(formatString.str(), Roboto);
+  PutToWindow(formatString.str(), Roboto, &pos);
+
+  UpdateVolumeOnScreen();
+  UpdateLoopOnScreen();
+  UpdatePauseOnScreen();
 }
 
 static void Init() {
@@ -160,6 +197,7 @@ static void Init() {
   int mixinitted = Mix_Init(mixflags);
   printf("Return value of Mix_Init(): %d\n", mixinitted);
   window = SDL_CreateWindow( "XMusic", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_SHOWN );
+  windowSurface = SDL_GetWindowSurface(window);
   int ret = InitFilePicker();
   if(!ret) {
       printf("File Picker disabled as it was not possible to init SDL_Image and/or SDL_TTF %u",ret);
@@ -169,6 +207,7 @@ static void Init() {
 }
 
 void ProcessInput() {
+  SDL_Rect volumePos = {10, 5, 150, 25};
   while (SDL_PollEvent(&event)) {
     switch(event.type){
       case SDL_CONTROLLERDEVICEADDED:
@@ -186,28 +225,42 @@ void ProcessInput() {
             if(paused == 0) {
               //SDL_PauseAudioDevice(deviceID, 1);
               Mix_PauseMusic();
-              paused = 1;
             }
             else {
+              //SDL_PauseAudioDevice(deviceID, 0);
               Mix_ResumeMusic();
-              paused = 0;
             }
+            paused = !paused;
+            UpdatePauseOnScreen();
             break;
           case SDLK_ESCAPE:
             Mix_HaltMusic();
             break;
           case SDLK_DOWN:
           case SDLK_VOLUMEDOWN:
-            audio_volume -= 2;
+            if (audio_volume - 2 > 0) {
+              audio_volume -= 2;
+            }
+            else {
+              audio_volume = 0;
+            }
             Mix_VolumeMusic(audio_volume);
+            UpdateVolumeOnScreen();
             break;
           case SDLK_UP:
           case SDLK_VOLUMEUP:
-            audio_volume += 2;
+            if (audio_volume + 2 < MIX_MAX_VOLUME) {
+              audio_volume += 2;
+            }
+            else {
+              audio_volume = MIX_MAX_VOLUME;
+            }
             Mix_VolumeMusic(audio_volume);
+            UpdateVolumeOnScreen();
             break;
           case SDLK_l:
             shouldLoop = !shouldLoop;
+            UpdateLoopOnScreen();
             break;
           default:
             break;
@@ -227,6 +280,7 @@ void ProcessInput() {
               Mix_ResumeMusic();
             }
             paused = !paused;
+            UpdatePauseOnScreen();
             break;
           case SDL_CONTROLLER_BUTTON_DPAD_DOWN:
             if (audio_volume > 0) {
@@ -236,6 +290,7 @@ void ProcessInput() {
               audio_volume = 0;
             }
             Mix_VolumeMusic(audio_volume);
+            UpdateVolumeOnScreen();
             break;
           case SDL_CONTROLLER_BUTTON_DPAD_UP:
             if(audio_volume < MIX_MAX_VOLUME) {
@@ -245,9 +300,11 @@ void ProcessInput() {
               audio_volume = MIX_MAX_VOLUME;
             }
             Mix_VolumeMusic(audio_volume);
+            UpdateVolumeOnScreen();
             break;
           case SDL_CONTROLLER_BUTTON_X:
             shouldLoop = !shouldLoop;
+            UpdateLoopOnScreen();
             break;
           default:
             break;
@@ -272,13 +329,13 @@ int main(int argc, char *argv[])
       int numFiles = showFilePicker(window);
       pos = {45, 40, 500, 20};
       for (int i = 0; i < numFiles; i++) {
-        SDL_FillRect(SDL_GetWindowSurface(window), &pos, SDL_MapRGB(SDL_GetWindowSurface(window)->format, 0, 0, 0));
+        SDL_FillRect(windowSurface, &pos, SDL_MapRGB(windowSurface->format, 0, 0, 0));
         pos.y += 20;
       }
     }
     else {
       pos = {45, 40, 500, 200};
-      SDL_FillRect(SDL_GetWindowSurface(window), &pos, SDL_MapRGB(SDL_GetWindowSurface(window)->format, 0, 0, 0));
+      SDL_FillRect(windowSurface, &pos, SDL_MapRGB(windowSurface->format, 0, 0, 0));
     }
     PlayFile();
     SDL_UpdateWindowSurface(window);

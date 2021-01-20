@@ -39,6 +39,7 @@ SDL_Window* window = NULL;
 int controllerport = 0;
 std::string controllername = "";
 bool exitted = 0;
+SDL_Surface *windowSurface;
 
 void OpenFirstController() {
   //Open controller
@@ -104,16 +105,16 @@ void Quit(Mix_Music *music, int exitcode) {
 }
 
 void Draw(SDL_Surface *borderImage, SDL_Surface *arrowImage, SDL_Window *window, std::vector<ProtoFS::fileEntry> listDir) {
-  SDL_BlitSurface(borderImage, NULL, SDL_GetWindowSurface(window), NULL);
+  SDL_BlitSurface(borderImage, NULL, windowSurface, NULL);
   pos = {95, 20, 500, 20};
   for (int i = 0; i < std::min((int)listDir.size(), (int) 20); i++) {
     text = TTF_RenderText_Blended(Roboto, listDir[i].fileName.c_str(), color);
     pos.y += 20;
-    SDL_BlitSurface(text, NULL, SDL_GetWindowSurface(window), &pos);
+    SDL_BlitSurface(text, NULL, windowSurface, &pos);
     SDL_FreeSurface(text);
     if (i == (curSelection % 20)) {
       pos.x = 45;
-      SDL_BlitSurface(arrowImage, NULL, SDL_GetWindowSurface(window), &pos);
+      SDL_BlitSurface(arrowImage, NULL, windowSurface, &pos);
       pos.x = 95;
     }
   }
