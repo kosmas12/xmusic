@@ -37,6 +37,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 #include <cstdio>
 #include <sstream>
 
+#define WIDTH 640
+#define HEIGHT 480
+
 //static Uint8 *audio_position = NULL; 
 //static Uint32 audio_length = 0;
 //Uint8 *wavBuffer = NULL;
@@ -180,7 +183,7 @@ static void PlayFile() {
 static void Init() {
 
   #if defined (NXDK)
-  XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
+  XVideoSetMode(WIDTH, HEIGHT, 32, REFRESH_DEFAULT);
   debugClearScreen();
   #endif
 
@@ -196,7 +199,7 @@ static void Init() {
   int mixflags = MIX_INIT_OGG|MIX_INIT_FLAC|MIX_INIT_MID|MIX_INIT_MOD|MIX_INIT_MP3/*|MIX_INIT_OPUS*/;
   int mixinitted = Mix_Init(mixflags);
   printf("Return value of Mix_Init(): %d\n", mixinitted);
-  window = SDL_CreateWindow( "XMusic", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_SHOWN );
+  window = SDL_CreateWindow( "XMusic", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_SHOWN );
   windowSurface = SDL_GetWindowSurface(window);
   int ret = InitFilePicker();
   if(!ret) {
