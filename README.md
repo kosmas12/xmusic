@@ -42,19 +42,47 @@ For Linux, Xbox (nxdk) and Windows (32 bit and 64 bit), there are available Make
 
 For UNIX systems:
 
-`make` (requires G++ 8 or higher, or equivalent clang)
+`make USE_SOFTWARE_SDL_STANDARD=1` (requires G++ 8 or higher, or equivalent clang)
 
 For Xbox:
 
-`make -f Makefile.nxdk` (Also requires setting the correct NXDK_DIR if it isn't there already)
+`make -f Makefile.nxdk USE_SOFTWARE_SDL_STANDARD=1` (Also requires setting the correct NXDK_DIR if it isn't there already)
 
 For Windows:
 
-`make -f MakefileWin32` for 32 bit
+`make -f MakefileWin32 USE_SOFTWARE_SDL_STANDARD=1` for 32 bit
 
-`make -f MakefileWin64` for 64 bit
+`make -f MakefileWin64 USE_SOFTWARE_SDL_STANDARD=1` for 64 bit
+
+With CMake:
+
+```
+mkdir build 
+cd build
+cmake .. -DUSE_SOFTWARE_SDL_STANDARD=ON
+make
+```
 
 Windows also requires that you pack all the DLL files in the same directory as XMusic.exe
+
+# Implementations
+
+XMusic works using an implementation of a player and a file picker. However, some people
+might prefer using one backend to play audio than another, for example, someone might
+prefer using PortAudio to play sound rather than XMusic's default SDL_mixer. Or someone
+would want to use their graphics card for drawing the interface rather than their processor for any reason.
+This is why XMusic supports using custom implementations. Someone with enough programmming
+knowledge can, for example, make their own XMusic implementation using the backend that
+they want. This is a list of currently supported implementations:
+
+| Name                                  | Implementing                       | Made for         |
+|---------------------------------------|------------------------------------|------------------|
+| player_software_SDL_mixer             | player (software, SDL_mixer)       | PC, Xbox         |
+| sourcePicker_software_SDL_FilesystemX | source picker (software, SDL)      | PC, Xbox         |
+| system_software_SDL                   | global needed code (software, SDL) | PC, Xbox         |
+
+**Standard implementations support PC and Original Xbox (nxdk toolchain) and all the other
+implementations have their supported platform(s) on their name**
 
 # Notes
 
