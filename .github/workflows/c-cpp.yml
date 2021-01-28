@@ -25,7 +25,7 @@ jobs:
         mkdir ~/source
         cp --recursive * ~/source
     - name: Compile
-      run: make
+      run: make USE_SOFTWARE_SDL_STANDARD=1
     - name: Copy source to artifact
       run: mv ~/source build/
     - uses: actions/upload-artifact@v2
