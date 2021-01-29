@@ -1,0 +1,10 @@
+//
+// Created by kosmas on 28/1/21.
+//
+
+#ifndef XMUSIC_SOURCEPICKER_HARDWARE_SDL_SCEIO_H
+#define XMUSIC_SOURCEPICKER_HARDWARE_SDL_SCEIO_H
+
+void selectSource();
+
+#endif //XMUSIC_SOURCEPICKER_HARDWARE_SDL_SCEIO_H

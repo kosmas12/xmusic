@@ -22,6 +22,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 #include "implementations/software/SDL/standard/sourcePicker_software_SDL_FilesystemX.h"
 #endif
 
+#ifdef USE_HARDWARE_SDL_PSP
+#include "implementations/hardware/SDL/PSP/system_hardware_SDL.h"
+#include "implementations/hardware/SDL/PSP/player_hardware_SDL_mixer.h"
+#include "implementations/hardware/SDL/PSP/sourcePicker_hardware_SDL_sceio.h"
+#endif
+
 int main(int argc, char *argv[]) {
 
     Init(); // Initialize all required libraries and variables
