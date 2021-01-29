@@ -3,12 +3,11 @@ GEN_XISO = $(XBE_TITLE).iso
 
 SRCS += main.cpp
 
-ifeq ($(USE_SOFTWARE_SDL_STANDARD),1)
 SRCS += implementations/software/SDL/standard/player_software_SDL_mixer.cpp
 SRCS += implementations/software/SDL/standard/sourcePicker_software_SDL_FilesystemX.cpp
 SRCS += implementations/software/SDL/standard/system_software_SDL.cpp
 CXXFLAGS += -DUSE_SOFTWARE_SDL_STANDARD=1
-endif
+
 NXDK_DIR = /home/$(USERNAME)/nxdk
 NXDK_SDL = y
 NXDK_CXX = y
