@@ -7,6 +7,8 @@
 #include <pspkernel.h>
 #include <pspdebug.h>
 #include <pspctrl.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 #include "player_hardware_SDL_mixer.h"
 #include "sourcePicker_hardware_SDL_sceio.h"
 
@@ -47,6 +49,9 @@ void Init() {
     exitted = false;
     sceCtrlSetSamplingCycle(0);
     sceCtrlSetSamplingMode(PSP_CTRL_MODE_ANALOG);
+    SDL_Init(SDL_INIT_AUDIO);
+    Mix_Init(MIX_INIT_FLAC|MIX_INIT_MID|MIX_INIT_MOD|MIX_INIT_MP3|MIX_INIT_OGG|MIX_INIT_OPUS);
+    pathToPlay = nullptr;
 }
 
 void FreeMusic(Mix_Music *music) {

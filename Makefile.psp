@@ -18,5 +18,5 @@ PSP_EBOOT_TITLE = XMusic
 
 PSPSDK=$(shell psp-config --pspsdk-path)
 CXXFLAGS += -std=c++17 -fno-rtti -Wall -g -Og
-LIBS := -lSDL2main -lSDL2 -lSDL2_ttf -lm -lGL -lfreetype -lz -lpspdebug -lpspctrl -lpspaudiolib -lpspvfpu -lpspdisplay -lpsphprm -lpspirkeyb -lpsprtc -lpspaudio -lpspvram -lpspgu -lpspge
+LIBS := -lSDL2main -lSDL2_ttf -lSDL2_mixer -lvorbisfile -lvorbis -logg -lSDL2 -lm -lGL -lfreetype -lz -lpspdebug -lpspctrl -lpspaudiolib -lpspvfpu -lpspdisplay -lpsphprm -lpspirkeyb -lpsprtc -lpspaudio -lpspvram -lpspgu -lpspge
 include $(PSPSDK)/lib/build.mak

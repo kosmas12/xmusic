@@ -39,21 +39,23 @@ void selectSource() {
     }
 
     while (!fileSelected) {
-
         oldCtrlData = ctrlData;
         sceCtrlReadBufferPositive(&ctrlData, 1);
         if (ctrlData.Buttons & PSP_CTRL_CROSS && ctrlData.Buttons != oldCtrlData.Buttons) {
+            fileToPlay = files[index];
             fileSelected = true;
         }
         if (ctrlData.Buttons & PSP_CTRL_DOWN && ctrlData.Buttons != oldCtrlData.Buttons) {
             if (index < fileCount-1) {
                 index++;
+                pspDebugScreenSetXY(0, fileCount+4);
                 printf("\nCurrently selected file: %s", files[index]);
             }
         }
         if (ctrlData.Buttons & PSP_CTRL_UP && ctrlData.Buttons != oldCtrlData.Buttons) {
             if (index > 0) {
                 index--;
+                pspDebugScreenSetXY(0, fileCount+4);
                 printf("\nCurrently selected file: %s", files[index]);
             }
         }
