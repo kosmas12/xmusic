@@ -94,8 +94,11 @@ int showSourcePicker(SDL_Window *window) {
                                     listDir = fs->listDir();
                                 }
                                 else {
-                                    fileToPlay = listDir[curSelection].filePath;
+                                    filesToPlay[0] = listDir[curSelection].filePath;
+                                    isPlaylist = false;
                                     if (listDir[curSelection].getExt() == ".m3u") {
+                                        numFiles = 0;
+                                        curFileNum = 0;
                                         isPlaylist = true;
                                     }
                                     return (int) listDir.size();

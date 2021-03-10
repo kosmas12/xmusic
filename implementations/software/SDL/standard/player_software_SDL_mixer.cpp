@@ -25,7 +25,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 std::stringstream formatString;
 
 void LoadPlaylist() {
-    std::ifstream fp(fileToPlay);
+    std::ifstream fp(filesToPlay[0]);
     std::string curLine;
 
     numFiles = 0;
@@ -39,6 +39,7 @@ void LoadPlaylist() {
             break;
         }
     }
+    fp.close();
 }
 
 bool GetNextInPlaylist() {
@@ -154,6 +155,9 @@ void PlaySource() {
     }
     else if (isPlaylist && shouldLoop){
         fileToPlay = filesToPlay[curFileNum-1];
+    }
+    else {
+        fileToPlay = filesToPlay[0];
     }
 
     audio_volume = MIX_MAX_VOLUME;
