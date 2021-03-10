@@ -122,7 +122,7 @@ void FreeMusic(Mix_Music *music) {
 }
 
 void ClearScreen() {
-    pos = {45, 40, 500, 200};
+    pos = {45, 40, 560, 200};
     SDL_FillRect(windowSurface, &pos, SDL_MapRGB(windowSurface->format, 0, 0, 0));
 }
 

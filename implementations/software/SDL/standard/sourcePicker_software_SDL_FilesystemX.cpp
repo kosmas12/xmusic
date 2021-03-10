@@ -163,7 +163,7 @@ int showSourcePicker(SDL_Window *window) {
 
 void selectSource() {
     int numFiles = showSourcePicker(window);
-    pos = {45, 40, 500, 20};
+    pos = {45, 40, 560, 20};
     for (int i = 0; i < numFiles; i++) {
         SDL_FillRect(windowSurface, &pos, SDL_MapRGB(windowSurface->format, 0, 0, 0));
         pos.y += 20;
