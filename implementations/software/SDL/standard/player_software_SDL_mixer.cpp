@@ -91,6 +91,55 @@ void UpdatePause() {
     PutToWindow(toWrite, Roboto, &pausePos);
 }
 
+void IncreaseVolume() {
+    if (audio_volume + 2 < MIX_MAX_VOLUME) {
+        audio_volume += 2;
+    }
+    else {
+        audio_volume = MIX_MAX_VOLUME;
+    }
+    Mix_VolumeMusic(audio_volume);
+    UpdateVolume();
+}
+
+void DecreaseVolume() {
+    if (audio_volume - 2 > 0) {
+        audio_volume -= 2;
+    }
+    else {
+        audio_volume = 0;
+    }
+    Mix_VolumeMusic(audio_volume);
+    UpdateVolume();
+}
+
+void ToggleLoop() {
+    shouldLoop = !shouldLoop;
+    if (!isPlaylist) {
+        shouldStop = !shouldLoop;
+    }
+    UpdateLoop();
+}
+
+void TogglePause() {
+    if(paused == 0) {
+        //SDL_PauseAudioDevice(deviceID, 1);
+        Mix_PauseMusic();
+    }
+    else {
+        //SDL_PauseAudioDevice(deviceID, 0);
+        Mix_ResumeMusic();
+    }
+    paused = !paused;
+    UpdatePause();
+}
+
+void StopPlaying() {
+    Mix_HaltMusic();
+    shouldLoop = false;
+    shouldStop = true;
+}
+
 void PlaySource() {
 
     // The playlist hasn't been loaded yet
@@ -183,50 +232,21 @@ void ProcessInput() {
                 switch (event.key.keysym.sym) {
                     case SDLK_AUDIOPLAY:
                     case SDLK_SPACE:
-                        if(paused == 0) {
-                            //SDL_PauseAudioDevice(deviceID, 1);
-                            Mix_PauseMusic();
-                        }
-                        else {
-                            //SDL_PauseAudioDevice(deviceID, 0);
-                            Mix_ResumeMusic();
-                        }
-                        paused = !paused;
-                        UpdatePause();
+                        TogglePause();
                         break;
                     case SDLK_ESCAPE:
-                        Mix_HaltMusic();
-                        shouldLoop = false;
-                        shouldStop = true;
+                        StopPlaying();
                         break;
                     case SDLK_DOWN:
                     case SDLK_VOLUMEDOWN:
-                        if (audio_volume - 2 > 0) {
-                            audio_volume -= 2;
-                        }
-                        else {
-                            audio_volume = 0;
-                        }
-                        Mix_VolumeMusic(audio_volume);
-                        UpdateVolume();
+                        DecreaseVolume();
                         break;
                     case SDLK_UP:
                     case SDLK_VOLUMEUP:
-                        if (audio_volume + 2 < MIX_MAX_VOLUME) {
-                            audio_volume += 2;
-                        }
-                        else {
-                            audio_volume = MIX_MAX_VOLUME;
-                        }
-                        Mix_VolumeMusic(audio_volume);
-                        UpdateVolume();
+                        IncreaseVolume();
                         break;
                     case SDLK_l:
-                        shouldLoop = !shouldLoop;
-                        if (!isPlaylist) {
-                            shouldStop = !shouldLoop;
-                        }
-                        UpdateLoop();
+                        ToggleLoop();
                         break;
                     default:
                         break;
@@ -234,48 +254,20 @@ void ProcessInput() {
                 break;
             case SDL_CONTROLLERBUTTONDOWN:
                 switch(event.cbutton.button){
-                    case SDL_CONTROLLER_BUTTON_B:
-                        Mix_HaltMusic();
-                        shouldLoop = false;
-                        shouldStop = true;
-                        break;
                     case SDL_CONTROLLER_BUTTON_A:
-                        if(paused == 0) {
-                            //SDL_PauseAudioDevice(deviceID, 1);
-                            Mix_PauseMusic();
-                        }
-                        else {
-                            Mix_ResumeMusic();
-                        }
-                        paused = !paused;
-                        UpdatePause();
+                        TogglePause();
+                        break;
+                    case SDL_CONTROLLER_BUTTON_B:
+                        StopPlaying();
                         break;
                     case SDL_CONTROLLER_BUTTON_DPAD_DOWN:
-                        if (audio_volume > 0) {
-                            audio_volume -= 2;
-                        }
-                        else {
-                            audio_volume = 0;
-                        }
-                        Mix_VolumeMusic(audio_volume);
-                        UpdateVolume();
+                        DecreaseVolume();
                         break;
                     case SDL_CONTROLLER_BUTTON_DPAD_UP:
-                        if(audio_volume < MIX_MAX_VOLUME) {
-                            audio_volume += 2;
-                        }
-                        else {
-                            audio_volume = MIX_MAX_VOLUME;
-                        }
-                        Mix_VolumeMusic(audio_volume);
-                        UpdateVolume();
+                        IncreaseVolume();
                         break;
                     case SDL_CONTROLLER_BUTTON_X:
-                        shouldLoop = !shouldLoop;
-                        if (!isPlaylist) {
-                            shouldStop = !shouldLoop;
-                        }
-                        UpdateLoop();
+                        ToggleLoop();
                         break;
                     default:
                         break;

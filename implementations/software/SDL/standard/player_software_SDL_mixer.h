@@ -45,6 +45,8 @@ void UpdateVolume();
 void UpdateLoop();
 void UpdatePause();
 void PutToWindow(std::string string, TTF_Font* font, SDL_Rect *pos);
+void IncreaseVolume();
+void DecreaseVolume();
 void PlaySource();
 void ProcessInput();
 bool isPlaying();
