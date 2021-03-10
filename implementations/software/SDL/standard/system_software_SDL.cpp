@@ -98,10 +98,13 @@ void Init() {
     SDL_Init(SDL_INIT_EVERYTHING);
     SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1");
     shouldLoop = false;
+    shouldStop = true;
     exitted = false;
     color = {255, 255, 255};
     pos = {0, 0, 0, 0};
-    int mixflags = MIX_INIT_OGG|MIX_INIT_FLAC|MIX_INIT_MID|MIX_INIT_MOD|MIX_INIT_MP3/*|MIX_INIT_OPUS*/;
+    isPlaylist = false;
+    curFileNum = 0;
+    int mixflags = MIX_INIT_OGG|MIX_INIT_FLAC|MIX_INIT_MID|MIX_INIT_MOD|MIX_INIT_MP3|MIX_INIT_OPUS;
     int mixinitted = Mix_Init(mixflags);
     printf("Return value of Mix_Init(): %d\n", mixinitted);
     window = SDL_CreateWindow( "XMusic", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_SHOWN );
@@ -116,7 +119,6 @@ void Init() {
 
 void FreeMusic(Mix_Music *music) {
     Mix_FreeMusic(music);
-    music = nullptr;
 }
 
 void ClearScreen() {

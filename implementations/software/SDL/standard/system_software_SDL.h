@@ -23,6 +23,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 #include <SDL_ttf.h>
 #include <SDL_mixer.h>
 #include <SDL_image.h>
+
 #else
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
@@ -32,6 +33,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 #include <string>
 #include <sstream>
 
+#if defined(NXDK) || defined(__WIN32__)
+#define SEPARATOR "\\"
+#else
+#define SEPARATOR "/"
+#endif
+
 #define WIDTH 640
 #define HEIGHT 480
 #ifdef MAININCLUDE
@@ -40,7 +47,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 #define EXTERN extern
 #endif
 
+EXTERN std::string filesToPlay[200];
 EXTERN std::string fileToPlay;
+EXTERN int curFileNum;
+EXTERN int numFiles;
 EXTERN SDL_GameController *controller;
 EXTERN SDL_Window* window;
 EXTERN int controllerport;
@@ -54,6 +64,8 @@ EXTERN TTF_Font *Roboto;
 EXTERN SDL_Rect pos;
 EXTERN SDL_Surface *text;
 EXTERN bool shouldLoop;
+EXTERN bool shouldStop;
+EXTERN bool isPlaylist;
 
 
 void Quit(Mix_Music *music, int exitcode);

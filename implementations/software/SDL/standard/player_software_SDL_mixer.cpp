@@ -19,8 +19,35 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 #define MAININCLUDE 1
 #include "player_software_SDL_mixer.h"
 #include "system_software_SDL.h"
+#include <cstdio>
+#include <fstream>
 
 std::stringstream formatString;
+
+void LoadPlaylist() {
+    std::ifstream fp(fileToPlay);
+    std::string curLine;
+
+    numFiles = 0;
+
+    while (std::getline(fp, curLine)) {
+        if (numFiles < 200) {
+            filesToPlay[numFiles] = curLine;
+            numFiles++;
+        }
+        else {
+            break;
+        }
+    }
+}
+
+bool GetNextInPlaylist() {
+    if (curFileNum <= numFiles) {
+        fileToPlay = filesToPlay[curFileNum];
+        return true;
+    }
+    return false;
+}
 
 void PutToWindow(std::string string, TTF_Font* font, SDL_Rect *pos) {
     text = TTF_RenderUTF8_Blended(font, string.c_str(), color);
@@ -65,6 +92,21 @@ void UpdatePause() {
 }
 
 void PlaySource() {
+
+    // The playlist hasn't been loaded yet
+    if (isPlaylist && numFiles == 0) {
+        LoadPlaylist();
+        shouldStop = false;
+    }
+
+    if (isPlaylist && !shouldLoop) {
+        GetNextInPlaylist();
+        curFileNum++;
+    }
+    else if (isPlaylist && shouldLoop){
+        fileToPlay = filesToPlay[curFileNum-1];
+    }
+
     audio_volume = MIX_MAX_VOLUME;
     paused = 0;
     pos = {45, 40, 500, 20};
@@ -117,7 +159,8 @@ void PlaySource() {
         formatString << "Opened controller " << controllername << " on port " << controllerport;
         PutToWindow(formatString.str(), Roboto, &pos);
     }
-    formatString << "Now playing: " << fileToPlay;
+    std::string nameToShow = fileToPlay.substr(fileToPlay.rfind(SEPARATOR) + 1);
+    formatString << "Now playing: " << nameToShow;
     PutToWindow(formatString.str(), Roboto, &pos);
 
     UpdateVolume();
@@ -153,6 +196,8 @@ void ProcessInput() {
                         break;
                     case SDLK_ESCAPE:
                         Mix_HaltMusic();
+                        shouldLoop = false;
+                        shouldStop = true;
                         break;
                     case SDLK_DOWN:
                     case SDLK_VOLUMEDOWN:
@@ -178,6 +223,9 @@ void ProcessInput() {
                         break;
                     case SDLK_l:
                         shouldLoop = !shouldLoop;
+                        if (!isPlaylist) {
+                            shouldStop = !shouldLoop;
+                        }
                         UpdateLoop();
                         break;
                     default:
@@ -188,6 +236,8 @@ void ProcessInput() {
                 switch(event.cbutton.button){
                     case SDL_CONTROLLER_BUTTON_B:
                         Mix_HaltMusic();
+                        shouldLoop = false;
+                        shouldStop = true;
                         break;
                     case SDL_CONTROLLER_BUTTON_A:
                         if(paused == 0) {
@@ -222,6 +272,9 @@ void ProcessInput() {
                         break;
                     case SDL_CONTROLLER_BUTTON_X:
                         shouldLoop = !shouldLoop;
+                        if (!isPlaylist) {
+                            shouldStop = !shouldLoop;
+                        }
                         UpdateLoop();
                         break;
                     default:

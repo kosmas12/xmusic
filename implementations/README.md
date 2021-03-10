@@ -27,7 +27,7 @@ System:
 <li>void ClearScreen()</li>
 <li>void UpdateScreen()</li>
 <li>bool exitted</li>
-<li>bool shouldLoop</li>
+<li>bool shouldStop</li>
 <li>Optional but recommended: a Quit() function to exit when asked</li>
 </ul>
 

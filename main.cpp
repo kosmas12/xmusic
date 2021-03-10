@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
         while (isPlaying()) { // If music is playing, this returns true, else false
             ProcessInput(); // Process all the input the user gives us for the player controls
         }
-        if (!shouldLoop) { // If the music shouldn't play again
+        if (shouldStop) { // If the music shouldn't play again
             FreeMusic(music); // Get rid of the current music
             selectSource(); // Select source to play new music
         }

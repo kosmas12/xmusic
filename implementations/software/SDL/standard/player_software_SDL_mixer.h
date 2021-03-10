@@ -39,7 +39,8 @@ EXTERN int paused;
 EXTERN int audio_open;
 
 
-
+void LoadPlaylist();
+bool GetNextInPlaylist();
 void UpdateVolume();
 void UpdateLoop();
 void UpdatePause();
