@@ -41,7 +41,7 @@ void Draw(SDL_Surface *borderImage, SDL_Surface *arrowImage, SDL_Window *window,
     SDL_BlitSurface(borderImage, NULL, windowSurface, NULL);
     pos = {95, 20, 500, 20};
     for (int i = 0; i < std::min((int)listDir.size(), (int) 20); i++) {
-        text = TTF_RenderText_Blended(Roboto, listDir[i].fileName.c_str(), color);
+        text = TTF_RenderUTF8_Blended(Roboto, listDir[i].fileName.c_str(), color);
         pos.y += 20;
         SDL_BlitSurface(text, NULL, windowSurface, &pos);
         SDL_FreeSurface(text);

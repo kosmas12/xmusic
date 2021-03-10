@@ -10,7 +10,7 @@ CXXFLAGS += -Wall -pedantic -g -Og
 LDFLAGS += -lstdc++fs -std=c++17
 
 all:
-	g++-8 $(SRCS) $(CXXFLAGS) -o XMusic $(LDFLAGS)
+	$(CXX) $(SRCS) $(CXXFLAGS) -o XMusic $(LDFLAGS)
 	mkdir build
 	cp XMusic build/
 	cp resources/Roboto-Regular.ttf build/

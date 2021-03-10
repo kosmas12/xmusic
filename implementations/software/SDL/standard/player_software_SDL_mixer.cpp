@@ -23,7 +23,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 std::stringstream formatString;
 
 void PutToWindow(std::string string, TTF_Font* font, SDL_Rect *pos) {
-    text = TTF_RenderText_Blended(font, string.c_str(), color);
+    text = TTF_RenderUTF8_Blended(font, string.c_str(), color);
     SDL_BlitSurface(text, NULL, windowSurface, pos);
     SDL_FreeSurface(text);
     pos->y += 20;
