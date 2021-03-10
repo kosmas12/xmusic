@@ -19,6 +19,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 #include "system_software_SDL.h"
 
 #if defined(NXDK)
+#include <hal/debug.h>
+#include <hal/video.h>
+#include <hal/xbox.h>
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include <SDL_mixer.h>
