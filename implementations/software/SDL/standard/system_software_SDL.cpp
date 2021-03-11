@@ -32,8 +32,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_image.h>
 #endif
-#include <string>
-#include <sstream>
 
 void Quit(Mix_Music *music, int exitcode) {
     Mix_CloseAudio();

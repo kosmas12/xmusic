@@ -47,7 +47,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 #define EXTERN extern
 #endif
 
-EXTERN std::string filesToPlay[200];
+EXTERN std::string filesToPlay[250];
 EXTERN std::string fileToPlay;
 EXTERN int curFileNum;
 EXTERN int numFiles;
