@@ -40,6 +40,18 @@ B will exit to dashboard if the program is in the file picker, will exit to file
 
 Y in the file picker will refresh the directory listing.
 
+PSP:
+
+D-Pad Up/Down to change files in file picker.
+
+X in file picker to confirm selection, use it for loop on/off in the player.
+
+O in player for pause/resume.
+
+Triangle to reset to beginning of file.
+
+Square to exit back to file picker.
+
 # How to compile
 
 For Linux, Xbox (nxdk) and Windows (32 bit and 64 bit), there are available Makefiles which allow you to easily compile XMusic. Just make sure to have the required dependencies (SDL2, SDL2_mixer, SDL2_ttf and SDL2_image) installed on your compiler's default search path.
@@ -66,6 +78,10 @@ cd build
 cmake .. -DUSE_SOFTWARE_SDL_STANDARD=ON
 make
 ```
+
+For PSP:
+
+`make -f Makefile.psp` (NOTE: Supports only .mp3 music for now)
 
 Windows also requires that you pack all the DLL files in the same directory as XMusic.exe
 
