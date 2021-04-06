@@ -46,15 +46,13 @@ int SetupCallbacks(void) {
 
 void error(char *msg)
 {
-    SceCtrlData pad;
     pspDebugScreenClear();
     pspDebugScreenSetXY(0, 0);
     pspDebugScreenPrintf(msg);
     pspDebugScreenPrintf("Press X to quit.\n");
 
     while (true) {
-        sceCtrlReadBufferPositive(&pad, 1);
-        if (pad.Buttons & PSP_CTRL_CROSS)
+        if (ctrlData.Buttons & PSP_CTRL_CROSS)
             break;
         sceDisplayWaitVblankStart();
     }
