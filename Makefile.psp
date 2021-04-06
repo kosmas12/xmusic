@@ -1,9 +1,9 @@
 TARGET = XMusic
 OBJS += main.o
 
-OBJS += implementations/hardware/SDL/PSP/system_hardware_SDL.o
-OBJS += implementations/hardware/SDL/PSP/player_hardware_SDL_mixer.o
-OBJS += implementations/hardware/SDL/PSP/sourcePicker_hardware_SDL_sceio.o
+OBJS += implementations/PSP/system_PSP.o
+OBJS += implementations/PSP/player_PSP_pspaudio.o
+OBJS += implementations/PSP/sourcePicker_PSP_sceio.o
 CXXFLAGS += -DUSE_HARDWARE_SDL_PSP
 
 # PSP Stuff
@@ -18,5 +18,5 @@ PSP_EBOOT_TITLE = XMusic
 
 PSPSDK=$(shell psp-config --pspsdk-path)
 CXXFLAGS += -std=c++17 -fno-rtti -Wall -g -Og
-LIBS := -lSDL2main -lSDL2_ttf -lSDL2_mixer -lvorbisfile -lvorbis -logg -lSDL2 -lm -lGL -lfreetype -lz -lpspdebug -lpspctrl -lpspaudiolib -lpspvfpu -lpspdisplay -lpsphprm -lpspirkeyb -lpsprtc -lpspaudio -lpspvram -lpspgu -lpspge
+LIBS := -lstdc++ -lgcc -lpspmp3 -lpspdebug -lpspctrl -lpspdisplay -lpspaudio
 include $(PSPSDK)/lib/build.mak

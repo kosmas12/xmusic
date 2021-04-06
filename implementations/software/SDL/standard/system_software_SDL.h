@@ -73,7 +73,7 @@ void OpenFirstController();
 void CloseFirstController();
 int InitSourcePicker();
 void Init();
-void FreeMusic(Mix_Music *music);
+void FreeMusic();
 void ClearScreen();
 void UpdateScreen();
 

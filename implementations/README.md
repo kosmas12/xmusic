@@ -22,10 +22,10 @@ header:
 
 System:
 <ul>
-<li>void Init()</li>
-<li>void FreeMusic()</li>
-<li>void ClearScreen()</li>
-<li>void UpdateScreen()</li>
+<li>Init()</li>
+<li>FreeMusic()</li>
+<li>ClearScreen()</li>
+<li>UpdateScreen()</li>
 <li>bool exitted</li>
 <li>bool shouldStop</li>
 <li>Optional but recommended: a Quit() function to exit when asked</li>
@@ -33,15 +33,15 @@ System:
 
 Player:
 <ul>
-<li>void PlaySource()</li>
+<li>PlaySource()</li>
 <li>bool isPlaying()</li>
-<li>void ProcessInput()</li>
+<li>ProcessInput()</li>
 </ul>
 
 Source picker (can pick a file, can pick a web link, pretty much anything
 as long as you can pass it to your player):
 <ul>
-<li>void selectSource()</li>
+<li>selectSource()</li>
 </ul>
 
 And now you can make your own implementation knowing these!

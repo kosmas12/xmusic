@@ -23,9 +23,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 #endif
 
 #ifdef USE_HARDWARE_SDL_PSP
-#include "implementations/hardware/SDL/PSP/system_hardware_SDL.h"
-#include "implementations/hardware/SDL/PSP/player_hardware_SDL_mixer.h"
-#include "implementations/hardware/SDL/PSP/sourcePicker_hardware_SDL_sceio.h"
+#include "implementations/PSP/system_PSP.h"
+#include "implementations/PSP/player_PSP_pspaudio.h"
+#include "implementations/PSP/sourcePicker_PSP_sceio.h"
 #endif
 
 int main(int argc, char *argv[]) {
@@ -33,15 +33,13 @@ int main(int argc, char *argv[]) {
     Init(); // Initialize all required libraries and variables
 
     while (!exitted) { // While we haven't been asked to exit
-        while (isPlaying()) { // If music is playing, this returns true, else false
+        while (isPlaying()) { // If music is playing, this returns true, else false (can change as part of a backend hack if needed)
             ProcessInput(); // Process all the input the user gives us for the player controls
         }
         if (shouldStop) { // If the music shouldn't play again
-            FreeMusic(music); // Get rid of the current music
-            selectSource(); // Select source to play new music
-        }
-        else {
             ClearScreen(); // Clear the screen
+            FreeMusic(); // Get rid of the current music
+            selectSource(); // Select source to play new music
         }
         PlaySource(); // Play the selected source
         UpdateScreen(); // Update the screen with the text from PlaySource()

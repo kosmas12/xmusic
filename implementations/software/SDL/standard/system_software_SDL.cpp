@@ -115,7 +115,7 @@ void Init() {
     OpenFirstController();
 }
 
-void FreeMusic(Mix_Music *music) {
+void FreeMusic() {
     Mix_FreeMusic(music);
 }
 

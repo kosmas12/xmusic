@@ -2,29 +2,26 @@
 // Created by kosmas on 28/1/21.
 //
 
-#include "sourcePicker_hardware_SDL_sceio.h"
-#include "system_hardware_SDL.h"
+#include "system_PSP.h"
+#include "sourcePicker_PSP_sceio.h"
 #include <pspiofilemgr.h>
 #include <pspdebug.h>
 #include <pspctrl.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
 
 void selectSource() {
     SceIoDirent dir;
-    memset(&dir, 0, sizeof(SceIoDirent));
     SceUID fd;
-    const char *basedir = "host0:/Music";
+    const std::string basedir = "host0:/build/Music/";
     bool fileSelected = false;
-    char *files[20]= {nullptr};
+    std::string files[20] = {""};
     int fileCount = 0;
 
-    fd = sceIoDopen(basedir);
+    fd = sceIoDopen(basedir.c_str());
     if (fd >= 0) {
         while (sceIoDread(fd, &dir) > 0) {
             if ((dir.d_stat.st_attr & FIO_SO_IFDIR) == 0) {
-                files[fileCount] = (char*) malloc (strlen(dir.d_name)+1);
-                strncpy (files[fileCount], dir.d_name, strlen(dir.d_name) );
+                files[fileCount] = dir.d_name;
                 fileCount++;
             }
         }
@@ -32,31 +29,33 @@ void selectSource() {
     }
     int index = 0;
 
-    printf("\nFound files in the Music directory: \n\n");
+    pspDebugScreenPrintf("\nFound files in the %s directory: \n\n", basedir.c_str());
 
     for (int i = 0; i < fileCount; i++) {
-        printf("%d: %s\n", i, files[i]);
+        pspDebugScreenPrintf("%d: %s\n", i, files[i].c_str());
     }
+
+    pspDebugScreenSetXY(0, fileCount+4);
+    pspDebugScreenPrintf("\nCurrently selected file: %s\n", files[index].c_str());
 
     while (!fileSelected) {
         oldCtrlData = ctrlData;
         sceCtrlReadBufferPositive(&ctrlData, 1);
+        pspDebugScreenSetXY(0, fileCount+4);
         if (ctrlData.Buttons & PSP_CTRL_CROSS && ctrlData.Buttons != oldCtrlData.Buttons) {
-            fileToPlay = files[index];
+            pathToPlay = basedir + files[index];
             fileSelected = true;
         }
         if (ctrlData.Buttons & PSP_CTRL_DOWN && ctrlData.Buttons != oldCtrlData.Buttons) {
             if (index < fileCount-1) {
                 index++;
-                pspDebugScreenSetXY(0, fileCount+4);
-                printf("\nCurrently selected file: %s", files[index]);
+                pspDebugScreenPrintf("\nCurrently selected file: %s\n", files[index].c_str());
             }
         }
         if (ctrlData.Buttons & PSP_CTRL_UP && ctrlData.Buttons != oldCtrlData.Buttons) {
             if (index > 0) {
                 index--;
-                pspDebugScreenSetXY(0, fileCount+4);
-                printf("\nCurrently selected file: %s", files[index]);
+                pspDebugScreenPrintf("\nCurrently selected file: %s\n", files[index].c_str());
             }
         }
     }
