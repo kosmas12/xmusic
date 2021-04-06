@@ -46,6 +46,7 @@ int fillStreamBuffer( int fd, int handle ) {
 }
 
 void LoadFile() {
+    pspDebugScreenClear();
     fd = sceIoOpen(pathToPlay.c_str(), PSP_O_RDONLY, 0777);
     if (fd<0)
     {
