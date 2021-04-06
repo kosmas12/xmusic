@@ -12,7 +12,7 @@
 void selectSource() {
     SceIoDirent dir;
     SceUID fd;
-    const std::string basedir = "host0:/build/Music/";
+    const std::string basedir = "ms0:/MUSIC/";
     bool fileSelected = false;
     std::string files[20] = {""};
     int fileCount = 0;
