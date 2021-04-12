@@ -8,7 +8,7 @@ SRCS += implementations/software/SDL/standard/sourcePicker_software_SDL_Filesyst
 SRCS += implementations/software/SDL/standard/system_software_SDL.cpp
 CXXFLAGS += -DUSE_SOFTWARE_SDL_STANDARD=1
 
-NXDK_DIR = /home/kosmas/fg-nxdk
+NXDK_DIR = /home/$(USER)/nxdk
 NXDK_SDL = y
 NXDK_SDL_MIXER = y
 NXDK_CXX = y
